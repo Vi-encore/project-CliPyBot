@@ -24,8 +24,6 @@ class Phone(Field):
         super().__init__(valid_phone)
 
     def validate_phone(self, phone):
-        # if not re.match(r'^\d{10}$', phone):
-        #     raise ValueError(f'Invalid phone number: {phone}. Phone must be exactly 10 digits')
         if not validate_and_normalize_phone(phone):
             raise ValueError(f'Invalid phone number: {phone}. Phone must be exactly 10 digits')
         return validate_and_normalize_phone(phone)
