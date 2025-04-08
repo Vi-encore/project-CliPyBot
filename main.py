@@ -65,6 +65,8 @@ def main():
             contacts.update_birthday(*args)
         elif cmd == 'all birthdays': #(name, days_to_upcoming)
             contacts.all_birthdays()
+        elif cmd == 'export contacts': #()
+            contacts.export_contacts_to_csv()
         # Notes commands
         # logic for notes
         else:

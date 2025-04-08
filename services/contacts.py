@@ -1,3 +1,6 @@
+import csv
+from pathlib import Path
+from datetime import datetime as dtdt
 from colorama import Fore, Back, Style
 from decorators.decorators import input_error, check_arguments
 from models.contact import Record
@@ -326,3 +329,48 @@ def close():
     save_contacts(book)
     print(Back.LIGHTWHITE_EX + Fore.BLACK + 'Goodbye. Data saved' + Style.RESET_ALL)
     return 0
+
+# EXPORT TO CSV
+@input_error
+def export_contacts_to_csv():
+    today = dtdt.now().strftime("%d.%m.%Y")
+    filename = f"contacts_{today}.csv"
+    
+    STORAGE_DIR = Path(__file__).parent.parent / "storage"
+    STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+    
+    default_path = STORAGE_DIR / filename
+    
+    dir_path = input(f"Enter the path to save the CSV file (press Enter for default save): ").strip()
+    if dir_path:
+        filepath = Path(dir_path) / filename
+    else:
+        filepath = default_path
+
+    # Check if the directory exists
+    if not filepath.parent.exists():
+        print(Fore.RED + f"Error: The directory '{filepath.parent}' does not exist." + Style.RESET_ALL)
+        create_dir = input(f"Would you like to create the directory '{filepath.parent}'? (y/n): ").strip().lower()
+        if create_dir == 'y':
+            filepath.parent.mkdir(parents=True, exist_ok=True)
+            print(f"Directory '{filepath.parent}' created.")
+        else:
+            print("Aborting export.")
+            return
+
+    # Check if the file is writable (optional, we just try opening it for writing)
+    try:
+        with filepath.open('w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['Name', 'Phones', 'Emails', 'Birthday'])
+            for record in book.data.values():
+                writer.writerow([
+                    record.name.value,
+                    ', '.join(p.value for p in record.phones),
+                    ', '.join(e.value for e in record.emails),
+                    record.birthday.value if record.birthday else ''
+                ])
+        print(Fore.GREEN + f"Contacts saved to: {filepath}" + Style.RESET_ALL)
+    
+    except (OSError, IOError) as e:
+        print(Fore.RED + f"Error writing to file: {e}" + Style.RESET_ALL)

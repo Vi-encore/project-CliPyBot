@@ -19,6 +19,7 @@ class Name(Field):
 # Phone  
 class Phone(Field):
     def __init__(self, phone: str):
+        phone = str(phone).strip()
         self.validate_phone(phone)
         super().__init__(phone)
     def validate_phone(self, phone):
