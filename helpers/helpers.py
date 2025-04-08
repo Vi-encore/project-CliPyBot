@@ -5,11 +5,17 @@ from models.contact import AddressBook
 DATA_DIR = Path(__file__).parent.parent / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-# to parse the user input from CLI
 def parse_input(user_input):
-    cmd, *args = user_input.split()
-    cmd = cmd.strip().lower()
-    return cmd, *args
+    parts = user_input.strip().split()
+    
+    if len(parts) >= 2:
+        cmd = f"{parts[0].lower()} {parts[1].lower()}"  # support 2-word commands
+        args = parts[2:]
+    else:
+        cmd = parts[0].lower() if parts else ''
+        args = parts[1:] if len(parts) > 1 else []
+
+    return [cmd] + args  
 
 # get path of the file
 def get_data_path(filename: str) -> Path:
@@ -19,13 +25,6 @@ def save_data(data_object, filename: str):
     file_path = get_data_path(filename)
     with open(file_path, "wb") as f:
         pickle.dump(data_object, f)
-
-def load_data(filename="addressbook.pkl"):
-    try:
-        with open(filename, "rb") as f:
-            return pickle.load(f)
-    except FileNotFoundError:
-        return AddressBook()
     
 def load_data(filename: str, default_factory=None):
     file_path = get_data_path(filename)
