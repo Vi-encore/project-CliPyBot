@@ -93,12 +93,13 @@ class Note:
         new_content = input('Enter a new content for this note: ')
         self.content.value = new_content
       return f'The content for {self.title.value} has been changed'
+    
+    
 
 
 class NotesBook(UserDict):
     def __init__(self):
         super().__init__()
-        # self.data = {}
 
     def __str__(self):
         return "\n".join(str(note) for note in self.data.values())
@@ -110,10 +111,16 @@ class NotesBook(UserDict):
         else:
             return "Failed to add note. Ensure the note has a title and content."
 
-
     def find_note(self, title): 
-       return self.data.get(title, None)
+      return self.data.get(title, None)
 
+    def delete_note(self, title):
+      #check if title still in data
+      if title in self.data:
+        self.data.pop(title)
+        return f'Note {title} has been deleted'
+      else:
+        return 'There is no note with that title'
 
 
 # Create a NotesBook and add a sample Note
@@ -125,12 +132,23 @@ created_note = (
 book.add_note(created_note)
 second_note = (Note().create_note())
 book.add_note(second_note)
+book.add_note(Note().create_note())
 
 # Edit the content of the note
 title = created_note.title.value
 to_edit= book.find_note(title)
 
+
+
+book.delete_note('title1')
+
+
+print(book)
+
 edited_note = to_edit.edit_content()
+
+
+
 # print(edited_note)
 
 # print(result)
