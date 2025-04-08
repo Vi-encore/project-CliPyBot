@@ -1,6 +1,6 @@
 from datetime import datetime
 from collections import UserDict
-from decorators.decorators import exception_handler
+# from decorators.decorators import exception_handler
 
 
 class Field:
@@ -48,7 +48,7 @@ class Note:
     def __str__(self) -> str:
         return f"Title: {self.title.value}, content: {self.content.value}, tags: {', '.join(tag.value for tag in self.tags)}."
 
-    @exception_handler
+    # @exception_handler
     def create_note(self):
         new_title = input("Enter a note title: ")
         new_content = input("Enter note content: ")
@@ -88,7 +88,7 @@ class Note:
     #         return f"Content of note with title '{title}' has been updated."
     #     else:
     #         return "No changes were made to the content."
-    @exception_handler
+    # @exception_handler
     def edit_content(self):
         is_change = input(
             f"You want to change that content {self.content.value} for {self.title.value} note? (y/n)"
@@ -114,11 +114,11 @@ class NotesBook(UserDict):
         else:
             return "Failed to add note. Ensure the note has a title and content."
 
-    @exception_handler
+    # @exception_handler
     def find_note(self, title):
         return self.data.get(title, None)
 
-    @exception_handler
+    # @exception_handler
     def delete_note(self, title):
         # check if title still in data
         if title in self.data:
@@ -138,11 +138,14 @@ book.add_note(created_note)
 second_note = Note().create_note()
 book.add_note(second_note)
 book.add_note(Note().create_note())
+book.add_note(Note().create_note())
+
 
 # Edit the content of the note
-title = created_note.title.value
-to_edit = book.find_note(title)
+# title = created_note.title.value
+to_edit = book.find_note('title2')
 
+print(book)
 
 book.delete_note("title1")
 
