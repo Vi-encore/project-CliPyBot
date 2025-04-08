@@ -44,6 +44,14 @@ def main():
             contacts.phone(*args)
         elif cmd == 'all':
             contacts.all()
+        elif cmd == 'add-email':
+            contacts.add_email(*args)
+        elif cmd == 'update-email':
+            contacts.update_email(*args)
+        elif cmd == 'show-email':
+            contacts.show_email(*args)
+        elif cmd == 'delete-email':
+            contacts.delete_email(*args)
         elif cmd == 'add-birthday':
             contacts.add_birthday(*args)
         elif cmd == 'show-birthday':

@@ -71,13 +71,84 @@ def all():
             print(f'--tel:{phone}')
         if record.birthday:
             print(f'--birthday:{record.birthday}')
+        if record.email:
+            print(f'--email:{record.email}')
             
     return 0
 
-# 5 add-birthday
+# === EMAIL ===
+@check_arguments(1)
+@input_error
+def add_email(*args:tuple):
+    *name_parts, email = args
+    name = " ".join(name_parts) 
+    
+    record = book.find(name)
+    if not record:
+        print(Fore.RED + f'Error: Contact "{name}" not found. Cannot add email.' + Style.RESET_ALL)
+        return 1
+    record.add_email(email)
+    print(f'Email added')
+    save_contacts(book)
+    return 0
+
 @check_arguments(2)
 @input_error
+def update_email(*args: tuple):
+    *name_parts, new_email = args
+    name = " ".join(name_parts)
+    
+    record = book.find(name)
+    if not record:
+        print(Fore.RED + f'Error: Contact "{name}" not found. Cannot update email.' + Style.RESET_ALL)
+        return 1
+    try:
+        record.update_email(new_email)
+        print(f'Email changed for {name}')
+        save_contacts(book)
+    except ValueError as e:
+        print(Fore.RED + str(e) + Style.RESET_ALL)
+        return 1
+    return 0
 
+@check_arguments(1)
+@input_error
+def show_email(*args: tuple):
+    name = " ".join(args)
+    
+    record = book.find(name)
+    if not record:
+        print(Fore.RED + f'Error: Contact "{name}" not found. Cannot show email.' + Style.RESET_ALL)
+        return 1
+    if record.email:
+        print(f'Email of {name}: {record.email}')
+    else:
+        print(Fore.RED + f'No email found for {name}.' + Style.RESET_ALL)
+    return 0
+
+@check_arguments(1)
+@input_error
+def delete_email(*args: tuple):
+    name = " ".join(args)
+
+    record = book.find(name)
+    if not record:
+        print(Fore.RED + f'Error: Contact "{name}" not found. Cannot delete email.' + Style.RESET_ALL)
+        return 1
+
+    if not record.email:
+        print(Fore.RED + f'No email found for {name} to delete.' + Style.RESET_ALL)
+        return 1
+    
+    record.email = None
+    print(f'Email for {name} deleted.')
+    save_contacts(book)
+
+    return 0
+
+# === BIRTHDAY === 
+@check_arguments(2)
+@input_error
 def add_birthday(*args:tuple):
     *name_parts, birthday = args
     name = " ".join(name_parts) 
@@ -94,7 +165,6 @@ def add_birthday(*args:tuple):
     save_contacts(book)
     return 0
 
-# 6 show-birthday
 @check_arguments(1)
 @input_error
 def show_birthday(*args:tuple):
@@ -109,7 +179,6 @@ def show_birthday(*args:tuple):
             
     return 0
 
-# 7 birthdays
 @input_error
 def birthdays():
     birthdays = book.get_upcoming_birthdays()

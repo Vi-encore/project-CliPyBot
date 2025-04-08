@@ -25,6 +25,16 @@ class Phone(Field):
         if not re.match(r'^\d{10}$', phone):
             raise ValueError(f'Invalid phone number: {phone}. Phone must be exactly 10 digits')
 
+class Email(Field):
+    def __init__(self, email: str):
+        self.validate_email(email)
+        super().__init__(email)
+        
+    def validate_email(self, email):
+        email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        if not re.match(email_regex, email):
+            raise ValueError(f"Invalid email format: {email}")
+        
 # Birthday
 class Birthday(Field): 
     def __init__(self, value: str):
@@ -44,6 +54,7 @@ class Record():
         self.phones = []
         self.birthday = None
     
+    # === PHONE ===
     @exception_handler
     def add_phone(self, phone: str):
         self.phones.append(Phone(phone))
@@ -61,13 +72,32 @@ class Record():
                 p.value = new_phone
                 return
         raise ValueError(f'Phone number {phone} is not found')
+    
+    # === EMAIL ===
+    @exception_handler
+    def add_email(self, email):
+        self.email = Email(email)
+    
+    @exception_handler
+    def update_email(self, new_email: str):
+        """Change the existing email."""
+        self.email = Email(new_email)
+    
+    @exception_handler
+    def remove_email(self):
+        """Remove the email for the contact."""
+        self.email = None
        
+    # === BIRTHDAY ===
     @exception_handler
     def add_birthday(self, birthday: str):
         self.birthday = Birthday(birthday)
              
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+        phone_str = "; ".join(p.value for p in self.phones)
+        email_str = f", email: {self.email.value}" if self.email else ""
+        birthday_str = f", birthday: {self.birthday.value}" if self.birthday else ""
+        return f"Contact name: {self.name.value}, phones: {phone_str}{email_str}{birthday_str}"
 
 # AddressBook
 class AddressBook():

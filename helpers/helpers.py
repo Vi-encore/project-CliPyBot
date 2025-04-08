@@ -15,7 +15,6 @@ def parse_input(user_input):
 def get_data_path(filename: str) -> Path:
     return DATA_DIR / filename
 
-
 def save_data(data_object, filename: str):
     file_path = get_data_path(filename)
     with open(file_path, "wb") as f:
