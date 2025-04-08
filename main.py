@@ -69,6 +69,6 @@ def main():
         # logic for notes
         else:
             print(Fore.YELLOW + 'Unknown command. To see all the available commands, type "help".' + Style.RESET_ALL)
-         
+
 if __name__ == '__main__':
     main()
