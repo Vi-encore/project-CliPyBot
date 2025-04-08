@@ -5,61 +5,71 @@ from colorama import Fore, Back, Style
 from decorators.decorators import input_error, check_arguments
 from models.contact import Record
 from helpers.helpers import load_contacts, save_contacts
+from rich.console import Console
+from rich.table import Table
+from rich import box
+from helpers.helpers import typing_input, typing_output
+
+console = Console()
 
 book = load_contacts()
 
 # ADD NEW CONTACT
 @input_error
 def add():
-    name = input("Contact name: ").strip()
+    name = typing_input("Contact name: (str): ")
     if not name:
-        print(Fore.RED + "Name is required to create a contact." + Style.RESET_ALL)
+        console.print("Name is required to create a contact. ❗⚠️ ", style="red italic") 
         return 1
 
     record = book.find(name)
     if not record:
         record = Record(name)
         book.add_record(record)
-        print(Fore.GREEN + "New contact created." + Style.RESET_ALL)
+        typing_output( "New contact created.")
     else:
-        print(Fore.YELLOW + "Contact already exists. Updating details..." + Style.RESET_ALL)
+         typing_output("Contact already exists.")
+         typing_output("Updating details...")
 
     # Loop for phone
     while True:
-        phone = input("Contact phone (press Enter to skip): ").strip()
+        phone = typing_input("Contact phone (press Enter to skip): (num) ").strip()
         if not phone:
             break
         try:
             record.add_phone(phone)
             break
         except Exception as e:
-            print(Fore.RED + "Invalid phone. Please try again." + Style.RESET_ALL)
+            console.print("Invalid phone. ❗⚠️ ", style="red italic")
+            typing_output("Please try again. ", color="yellow", s_style="italic")
 
     # Loop for email
     while True:
-        email = input("Contact email (press Enter to skip): ").strip()
+        email = typing_input("Contact email (press Enter to skip): (str): ").strip()
         if not email:
             break
         try:
             record.add_email(email)
             break
         except Exception as e:
-            print(Fore.RED + "Invalid email. Please try again." + Style.RESET_ALL)
+            console.print("Invalid email ❗⚠️ ", style="red italic")
+            typing_output("Please try again. ", color="yellow", s_style="italic")
 
     # Loop for birthday
     while True:
-        birthday = input("Contact birthday (dd.mm.yyyy, press Enter to skip): ").strip()
+        birthday = typing_input("Contact birthday (dd.mm.yyyy, press Enter to skip): (str) ").strip()
         if not birthday:
             break
         try:
             record.add_birthday(birthday)
             break
         except Exception as e:
-            print(Fore.RED + "Invalid birthday. Please use format dd.mm.yyyy." + Style.RESET_ALL)
+            console.print("Invalid birthday format.❗⚠️ ", style="red italic")
+            typing_output("Please use the format dd.mm.yyyy. ", color="yellow", s_style="italic")
 
     save_contacts(book)
 
-    print(Fore.GREEN + f'Contact "{name}" saved successfully.' + Style.RESET_ALL)
+    typing_output(f'Contact "{name}" saved successfully.')
     print("Contact details:")
     print(record)
     return 0
@@ -327,7 +337,8 @@ def update_birthday(*args:tuple):
 # CLOSE
 def close():
     save_contacts(book)
-    print(Back.LIGHTWHITE_EX + Fore.BLACK + 'Goodbye. Data saved' + Style.RESET_ALL)
+    typing_output('Goodbye 🐇')
+    typing_output('All data saved! 💾')
     return 0
 
 # EXPORT TO CSV
