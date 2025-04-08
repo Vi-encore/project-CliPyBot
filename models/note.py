@@ -1,4 +1,5 @@
 from datetime import datetime
+from collections import UserDict
 
 
 class Field:
@@ -43,13 +44,7 @@ class Note:
         self.content = None
         self.tags = []
 
-    #     self.notes = {}
-    # self.title = Title(title)
-    # self.content = Content(content)
-    # self.tag = None
-
     def __str__(self) -> str:
-        # print(self.title.value)
         return f"Title: {self.title.value}, content: {self.content.value}, tags: {', '.join(tag.value for tag in self.tags)}."
 
     def create_note(self):
@@ -67,22 +62,78 @@ class Note:
         self.tags = new_tags
 
         # Optionally return the formatted string representation
-        return str(self)
+        return self
+
+    # def edit_note(self, title):
+    #     # Search for the note by title in the data dictionary
+    #     note = self.data.get(title)
+
+    #     if not note:
+    #         return f"Note with title '{title}' does not exist."
+
+    #     # Display the current content of the note
+    #     print(f"Current Content: {note.content.value}")
+
+    #     # Ask the user for the new content
+    #     new_content = input(
+    #         "Enter new content (leave empty to keep the current content): "
+    #     )
+
+    #     # Update content if the user provides new content
+    #     if new_content.strip():
+    #         note.content = Content(new_content.strip())
+    #         self.data[title] = note  # Save the updated note back to the NotesBook
+    #         return f"Content of note with title '{title}' has been updated."
+    #     else:
+    #         return "No changes were made to the content."
+    def edit_content(self):
+      is_change = input(f'You want to change that content {self.content.value} for {self.title.value} note? (y/n)')
+      old_content = self.content.value
+      if is_change == 'y':
+        new_content = input('Enter a new content for this note: ')
+        self.content.value = new_content
+      return f'The content for {self.title.value} has been changed'
 
 
+class NotesBook(UserDict):
+    def __init__(self):
+        super().__init__()
+        # self.data = {}
+
+    def __str__(self):
+        return "\n".join(str(note) for note in self.data.values())
+
+    def add_note(self, note: Note):
+        if note.title and note.content:  # Ensure note has valid title and content
+            self.data[note.title.value] = note
+            return f"Note with title '{note.title.value}' has been added."
+        else:
+            return "Failed to add note. Ensure the note has a title and content."
+
+
+    def find_note(self, title): 
+       return self.data.get(title, None)
+
+
+
+# Create a NotesBook and add a sample Note
+book = NotesBook()
 note = Note()
-# print(note.create_note())
-created_note = note.create_note()
-print(created_note)
+created_note = (
+    note.create_note()
+)  # Ensure create_note() returns the `self` Note instance
+book.add_note(created_note)
+second_note = (Note().create_note())
+book.add_note(second_note)
 
+# Edit the content of the note
+title = created_note.title.value
+to_edit= book.find_note(title)
 
-# class NotesBook():
-#   def __init__(self):
-#     self.data = {}
+edited_note = to_edit.edit_content()
+# print(edited_note)
 
-#   def add_note(self, note: Note):
-#     self.data[note.title.value] = Note(note)
-
-
-# book = NotesBook()
-# book.add_note('')
+# print(result)
+# print(book.find_note(second_note.title.value))
+# Display all notes in the NotesBook
+print(book)
