@@ -25,6 +25,17 @@ class Phone(Field):
         if not re.match(r'^\d{10}$', phone):
             raise ValueError(f'Invalid phone number: {phone}. Phone must be exactly 10 digits')
 
+# Email
+class Email(Field):
+    def __init__(self, email: str):
+        self.validate_email(email)
+        super().__init__(email)
+        
+    def validate_email(self, email):
+        email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        if not re.match(email_regex, email):
+            raise ValueError(f"Invalid email format: {email}")
+        
 # Birthday
 class Birthday(Field): 
     def __init__(self, value: str):
@@ -42,9 +53,10 @@ class Record():
     def __init__(self, name: str):
         self.name = Name(name)
         self.phones = []
+        self.emails = []
         self.birthday = None
     
-    @exception_handler
+    # === PHONE ===
     def add_phone(self, phone: str):
         self.phones.append(Phone(phone))
       
@@ -55,19 +67,48 @@ class Record():
         return None
     
     @exception_handler
-    def edit_phone(self, phone: str, new_phone: str):
+    def change_phone(self, phone: str, new_phone: str):
         for p in self.phones:
             if p.value == phone:
                 p.value = new_phone
                 return
         raise ValueError(f'Phone number {phone} is not found')
-       
+    
     @exception_handler
+    def delete_phone(self, phone: str):
+        before = len(self.phones)
+        self.phones = [p for p in self.phones if p.value != phone]
+        if len(self.phones) == before:
+            raise ValueError(f'Phone number {phone} is not found')
+        
+    # === EMAIL ===
+    def add_email(self, email: str):
+        self.emails.append(Email(email)) 
+    
+    @exception_handler
+    def change_email(self, old_email: str, new_email: str):
+        for i, email in enumerate(self.emails):
+            if email.value == old_email:
+                self.emails[i] = Email(new_email)
+                return
+        raise ValueError(f"Email '{old_email}' not found.")
+    
+    @exception_handler
+    def delete_email(self, email: str):
+        before = len(self.emails)
+        self.emails = [e for e in self.emails if e.value != email]
+        if len(self.emails) == before:
+            raise ValueError(f"Email '{email}' not found.")
+       
+    # === BIRTHDAY ===
     def add_birthday(self, birthday: str):
         self.birthday = Birthday(birthday)
-             
+            
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+        phone_str = "; ".join(p.value for p in self.phones)
+        email_str = "; ".join(e.value for e in self.emails) if self.emails else ""
+        birthday_str = f", birthday: {self.birthday.value}" if self.birthday else ""
+        return f"Contact name: {self.name.value}, phones: {phone_str}, emails: {email_str},{birthday_str}"
 
 # AddressBook
 class AddressBook():
