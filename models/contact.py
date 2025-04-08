@@ -1,7 +1,7 @@
 import re
 import datetime as dt
 from datetime import datetime as dtdt
-from src.scripts.decorators import exception_handler
+from decorators.decorators import exception_handler
 
 #  Field
 class Field():

@@ -1,6 +1,6 @@
 from colorama import Fore, Back, Style
-from src import contacts
-from src.scripts.helpers import parse_input
+from services import contacts
+from helpers.helpers import parse_input
 
 def main():
     '''

@@ -1,5 +1,5 @@
 import pickle
-from src.scripts.classes import AddressBook
+from models.contact import AddressBook
 
 def parse_input(user_input):
     cmd, *args = user_input.split()
