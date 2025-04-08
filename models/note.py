@@ -1,6 +1,12 @@
 from datetime import datetime
 from collections import UserDict
-# from decorators.decorators import exception_handler
+# from ..decorators.decorators import input_error
+from decorators.decorators import input_error
+# from decorators import decorators
+# from .decorators import exception_handler
+
+
+# print(decorators)
 
 
 class Field:
@@ -24,7 +30,7 @@ class Content(Field):
 
 
 # Creating a tag
-class Tag(Field):
+class Tag(Field): #add strip
     def __init__(self, tag: str):
         tag = self.create_tag(tag)
         super().__init__(tag)
@@ -48,7 +54,7 @@ class Note:
     def __str__(self) -> str:
         return f"Title: {self.title.value}, content: {self.content.value}, tags: {', '.join(tag.value for tag in self.tags)}."
 
-    # @exception_handler
+    @input_error  #will trigger ModuleNotFound error if run from here ??? 
     def create_note(self):
         new_title = input("Enter a note title: ")
         new_content = input("Enter note content: ")
@@ -88,7 +94,7 @@ class Note:
     #         return f"Content of note with title '{title}' has been updated."
     #     else:
     #         return "No changes were made to the content."
-    # @exception_handler
+    @input_error  #will trigger ModuleNotFound error if run from here ??? 
     def edit_content(self):
         is_change = input(
             f"You want to change that content {self.content.value} for {self.title.value} note? (y/n)"
@@ -97,7 +103,7 @@ class Note:
         if is_change == "y":
             new_content = input("Enter a new content for this note: ")
             self.content.value = new_content
-        return f"The content for {self.title.value} has been changed"
+        return f"The content for {self.title.value} has been changed" #if no - return smth
 
 
 class NotesBook(UserDict):
@@ -114,11 +120,11 @@ class NotesBook(UserDict):
         else:
             return "Failed to add note. Ensure the note has a title and content."
 
-    # @exception_handler
+    @input_error  #will trigger ModuleNotFound error if run from here ??? 
     def find_note(self, title):
         return self.data.get(title, None)
 
-    # @exception_handler
+    @input_error #will trigger ModuleNotFound error if run from here ??? 
     def delete_note(self, title):
         # check if title still in data
         if title in self.data:
