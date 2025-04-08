@@ -2,6 +2,7 @@ import re
 import datetime as dt
 from datetime import datetime as dtdt
 from decorators.decorators import exception_handler
+from helpers.validators import validate_and_normalize_phone
 
 #  Field
 class Field():
@@ -19,11 +20,15 @@ class Name(Field):
 # Phone  
 class Phone(Field):
     def __init__(self, phone: str):
-        self.validate_phone(phone)
-        super().__init__(phone)
+        valid_phone = self.validate_phone(phone)
+        super().__init__(valid_phone)
+
     def validate_phone(self, phone):
-        if not re.match(r'^\d{10}$', phone):
+        # if not re.match(r'^\d{10}$', phone):
+        #     raise ValueError(f'Invalid phone number: {phone}. Phone must be exactly 10 digits')
+        if not validate_and_normalize_phone(phone):
             raise ValueError(f'Invalid phone number: {phone}. Phone must be exactly 10 digits')
+        return validate_and_normalize_phone(phone)
 
 # Email
 class Email(Field):
@@ -107,11 +112,11 @@ class Record():
     def __str__(self):
         phone_str = "; ".join(p.value for p in self.phones)
         email_str = "; ".join(e.value for e in self.emails) if self.emails else ""
-        birthday_str = f", birthday: {self.birthday.value}" if self.birthday else ""
+        birthday_str = f" birthday: {self.birthday.value}" if self.birthday else ""
         return f"Contact name: {self.name.value}, phones: {phone_str}, emails: {email_str},{birthday_str}"
 
 # AddressBook
-class AddressBook():
+class AddressBook:
     def __init__(self):
         self.data = {}
     
