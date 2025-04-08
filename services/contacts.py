@@ -1,10 +1,10 @@
 from colorama import Fore, Back, Style
 from decorators.decorators import input_error, check_arguments
 from models.contact import Record
-from helpers.helpers import save_data, load_data
+from helpers.helpers import load_contacts, save_contacts
 
 # ==== COMMANDS ====
-book = load_data('contacts.pkl')
+book = load_contacts()
 # 1 add
 @check_arguments(2)
 @input_error
@@ -23,7 +23,7 @@ def add(*args: tuple):
     if phone:
         record.add_phone(phone)
     print(message)
-    save_data(book, 'contacts.pkl')
+    save_contacts(book)
     return 0
 
 # 2 change
@@ -39,7 +39,7 @@ def change(*args: tuple):
         raise ValueError(f'Contact {name} cannot be found')
     record.edit_phone(old_phone, new_phone)
     print(f'Contact updated')
-    save_data(book, 'contacts.pkl')
+    save_contacts(book)
     return 0
 
 #3 phone
@@ -91,7 +91,7 @@ def add_birthday(*args:tuple):
     record.add_birthday(birthday)
     print(f'Birthday added')
 
-    save_data(book, 'contacts.pkl')
+    save_contacts(book)
     return 0
 
 # 6 show-birthday
@@ -133,11 +133,11 @@ def remove(*args:tuple):
     else: 
         book.delete(name)
         print(f'Contact with name {name} is deleted')
-        save_data(book, 'contacts.pkl')
+        save_contacts(book)
     
     return 0
     
 def close():
-    save_data(book, 'contacts.pkl')
+    save_contacts(book)
     print(Back.LIGHTWHITE_EX + Fore.BLACK + 'Goodbye. Data saved' + Style.RESET_ALL)
     return 0
