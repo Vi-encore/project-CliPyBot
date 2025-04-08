@@ -1,7 +1,7 @@
 from colorama import Fore, Back, Style
-from scripts.decorators import input_error, check_arguments
-from scripts.classes import Record
-from scripts.helpers import save_data, load_data
+from src.scripts.decorators import input_error, check_arguments
+from src.scripts.classes import Record
+from src.scripts.helpers import save_data, load_data
 
 # ==== COMMANDS ====
 book = load_data('contacts.pkl')
