@@ -1,7 +1,9 @@
 from services import contacts
-from helpers.helpers import parse_input, show_help, typing_output, typing_input
+from helpers.helpers import parse_input
+from services.shared import show_help, close, hello, goodbye, greeting
+from helpers.typing_effect import typing_input, typing_output
 from rich.console import Console
-from colorama import Fore, Style
+from helpers.matrix_effect import matrix_drop
 
 # Initialize Console for rich output
 console = Console()
@@ -11,10 +13,7 @@ def main():
         Main function for the assistant bot
         that works with contacts and notes.
     '''
-    typing_output("⚡ Welcome to the Assistant Bot ⚡")
-    typing_output("Loading... Please wait...")
-    print('')
-
+    greeting()
 
     while True:
         user_input = typing_input('Enter a command </>: ')
@@ -29,16 +28,16 @@ def main():
         if cmd == '':
             console.print('Please enter a command.', style='yellow italic')
             continue
-        elif cmd in ["close", "exit"]:
-            contacts.close()
+        elif cmd in ["close", "exit", "quit"]:
+            close()
             break
         elif cmd == 'hello':
-            typing_output('Hello, Neo...  ')
-            typing_output('I am your assistant bot. ')
-            typing_output('I can help you with your contacts and notes. ')
-            typing_output('To see the list of available commands, please type "help". ')
+            hello()
         elif cmd == 'help':
-            show_help()
+            show_help() 
+        elif cmd == 'goodbye': # to close presentation
+            goodbye()
+            break
         # Contact commands 
         elif cmd == 'add contact': #()
             contacts.add()
