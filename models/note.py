@@ -1,7 +1,9 @@
 from datetime import datetime
 from collections import UserDict
+
 # from ..decorators.decorators import input_error
-from decorators.decorators import input_error
+# from decorators.decorators import input_error
+
 # from decorators import decorators
 # from .decorators import exception_handler
 
@@ -20,18 +22,24 @@ class Field:
 # Do we need some form of validation for note title?
 class Title(Field):
     def __init__(self, title: str):
+        if len(title) > 1000:
+            raise ValueError("Title length should not exceed 1000 symbols")
         super().__init__(title)
 
 
 # Do we need some form of validation for notes?
 class Content(Field):
     def __init__(self, content: str):
+        if len(content) > 20000:
+            raise ValueError("Content length should not exceed 20000 symbols")
         super().__init__(content)
 
 
 # Creating a tag
-class Tag(Field): #add strip
+class Tag(Field):  # add strip
     def __init__(self, tag: str):
+        if len(tag) > 25:
+            raise ValueError("Tag length should not exceed 25 symbols")
         tag = self.create_tag(tag)
         super().__init__(tag)
 
@@ -54,23 +62,26 @@ class Note:
     def __str__(self) -> str:
         return f"Title: {self.title.value}, content: {self.content.value}, tags: {', '.join(tag.value for tag in self.tags)}."
 
-    @input_error  #will trigger ModuleNotFound error if run from here ??? 
+    # @input_error  # will trigger ModuleNotFound error if run from here ???
     def create_note(self):
-        new_title = input("Enter a note title: ")
-        new_content = input("Enter note content: ")
-        create_tag = input("Want to add a tag? (y/n): ").lower()
+        try:
+            new_title = input("Enter a note title: ")
+            self.title = Title(new_title)
 
-        new_tags = []
-        if create_tag == "y":
-            tags = input("Enter your tag(s), separated by commas: ").split(",")
-            new_tags = [Tag(tag.strip()) for tag in tags]
+            new_content = input("Enter note content: ")
+            self.content = Content(new_content)
 
-        self.title = Title(new_title)
-        self.content = Content(new_content)
-        self.tags = new_tags
+            create_tag = input("Want to add a tag? (y/n): ").lower()
+            new_tags = []
+            if create_tag == "y":
+                tags = input("Enter your tag(s), separated by commas: ").split(",")
+                new_tags = [Tag(tag.strip()) for tag in tags]
 
-        # Optionally return the formatted string representation
-        return self
+            self.tags = new_tags
+            return self  # Return the updated instance
+        except ValueError as e:
+            print(f"Error: {e}")
+            return None  # Return None in case of an error
 
     # def edit_note(self, title):
     #     # Search for the note by title in the data dictionary
@@ -94,16 +105,23 @@ class Note:
     #         return f"Content of note with title '{title}' has been updated."
     #     else:
     #         return "No changes were made to the content."
-    @input_error  #will trigger ModuleNotFound error if run from here ??? 
+    # @input_error  # will trigger ModuleNotFound error if run from here ???
     def edit_content(self):
-        is_change = input(
-            f"You want to change that content {self.content.value} for {self.title.value} note? (y/n)"
-        )
-        old_content = self.content.value
-        if is_change == "y":
-            new_content = input("Enter a new content for this note: ")
-            self.content.value = new_content
-        return f"The content for {self.title.value} has been changed" #if no - return smth
+        try:
+            is_change = input(
+                f"Do you want to change the content '{self.content.value}' for the note titled '{self.title.value}'? (y/n): "
+            ).lower()
+            if is_change == "y":
+                new_content = input("Enter new content for this note: ")
+                if len(new_content) > 20000:
+                    print("Content length should not exceed 20000 symbols.")
+                else:
+                    self.content.value = new_content
+                    print(f"The content for '{self.title.value}' has been updated.")
+            else:
+                print("No changes were made.")
+        except AttributeError:
+            print("Error: The note doesn't have content or a title set.")
 
 
 class NotesBook(UserDict):
@@ -114,17 +132,19 @@ class NotesBook(UserDict):
         return "\n".join(str(note) for note in self.data.values())
 
     def add_note(self, note: Note):
-        if note.title and note.content:  # Ensure note has valid title and content
+        if (
+            note and note.title and note.content
+        ):  # Ensure note has valid title and content
             self.data[note.title.value] = note
             return f"Note with title '{note.title.value}' has been added."
         else:
             return "Failed to add note. Ensure the note has a title and content."
 
-    @input_error  #will trigger ModuleNotFound error if run from here ??? 
+    # @input_error  # will trigger ModuleNotFound error if run from here ???
     def find_note(self, title):
         return self.data.get(title, None)
 
-    @input_error #will trigger ModuleNotFound error if run from here ??? 
+    # @input_error  # will trigger ModuleNotFound error if run from here ???
     def delete_note(self, title):
         # check if title still in data
         if title in self.data:
@@ -149,7 +169,7 @@ book.add_note(Note().create_note())
 
 # Edit the content of the note
 # title = created_note.title.value
-to_edit = book.find_note('title2')
+to_edit = book.find_note("title2")
 
 print(book)
 
