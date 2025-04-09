@@ -36,7 +36,7 @@ class Tag(Field):  # add strip
         super().__init__(tag)
 
     def create_tag(self, tag):
-        tag = f"#{tag}"
+        tag = f"#{tag.replace(' ', "_")}"
         return tag
 
 
@@ -153,6 +153,95 @@ class Note:
             print("Error: The note doesn't have content or a title set.")
 
     # def edit_tags(self):
+    def edit_tags(self):
+        try:
+            # Display current tags without the `#` prefix
+            is_change = input(
+                f"Do you want to change the tags for '{self.title.value}' note'? (y/n): "
+            ).lower()
+
+            if is_change == "y":
+                tags_to_edit = [
+                    tag.value[1:] for tag in self.tags
+                ]  # Remove the `#` prefix
+                print(f"Current tags: {', '.join(tags_to_edit)}")
+
+                # Ask the user if they want to edit all or specific tags
+                action = input(
+                    "Do you want to edit all tags or specific ones? (all/specific): "
+                ).lower()
+
+                if action == "all":
+                    while True:
+                        new_tags = input(
+                            "Enter new tags, separated by commas: "
+                        ).strip()
+                        if not new_tags:  # Check if the input is empty
+                            print("You did not enter any value.")
+                            try_again = input(
+                                "Would you like to try again? (y/n): "
+                            ).lower()
+                            if try_again != "y":
+                                print("Tags have not been changed.")
+                                return
+                        else:
+                            self.tags = [
+                                Tag(tag.strip()) for tag in new_tags.split(",")
+                            ]  # Add `#` prefix automatically
+                            break
+                elif action == "specific":
+                    while True:
+                        for index, tag in enumerate(tags_to_edit, 1):
+                            print(f"{index}. {tag}")
+                        tag_indices = input(
+                            "Enter the numbers of tags you want to edit:"
+                        ).strip()
+                        if not tag_indices:  # Check if the input is empty
+                            print("You did not enter any value.")
+                            try_again = input(
+                                "Would you like to try again? (y/n): "
+                            ).lower()
+                            if try_again != "y":
+                                print("Tags have not been changed.")
+                                return
+                        else:
+                            tag_indices = [
+                                int(index) - 1
+                                for index in tag_indices.split(",")
+                                if index.isdigit()
+                            ]  # Convert to zero-based indices
+                            for i in tag_indices:
+                                if 0 <= i < len(tags_to_edit):  # Ensure valid index
+                                    while True:
+                                        new_tag = input(
+                                            f"Enter new value for tag '{tags_to_edit[i]}': "
+                                        ).strip()
+                                        if (
+                                            not new_tag
+                                        ):  # Check if input for new tag is empty
+                                            print("You did not enter any value.")
+                                            try_again = input(
+                                                "Would you like to try again? (y/n): "
+                                            ).lower()
+                                            if try_again != "y":
+                                                print(
+                                                    f"No changes were made to the tag '{tags_to_edit[i]}'."
+                                                )
+                                                break
+                                        else:
+                                            self.tags[i] = Tag(
+                                                new_tag
+                                            )  # Update the tag
+                                            break
+                            break
+                else:
+                    print("No changes were made to the tags.")
+
+                # Confirm updates
+                updated_tags = ", ".join(tag.value for tag in self.tags)
+                print(f"Updated tags: {updated_tags}")
+        except AttributeError:
+            print("Error: The note doesn't have content or a title set.")
 
 
 class NotesBook(UserDict):
@@ -187,16 +276,17 @@ class NotesBook(UserDict):
 
 # Create a NotesBook and add a sample Note
 book = NotesBook()
-note = Note()
-created_note = (
-    note.create_note()
-)  # Ensure create_note() returns the `self` Note instance
-book.add_note(created_note)
+# note = Note()
+# created_note = (
+#     note.create_note()
+# )  # Ensure create_note() returns the `self` Note instance
+# book.add_note(created_note)
 # second_note = Note().create_note()
 # book.add_note(second_note)
 book.add_note(Note().create_note())
 # book.add_note(Note().create_note())
 
+print(book)
 
 # Edit the content of the note
 # title = created_note.title.value
@@ -207,7 +297,8 @@ print(book)
 # book.delete_note("title1")
 
 
-edited_note = to_edit.edit_title()
+# to_edit.edit_title()
+to_edit.edit_tags()
 
 print(book)
 
