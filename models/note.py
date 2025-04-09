@@ -19,13 +19,11 @@ class Field:
         return str(self.value)
 
 
-# Do we need some form of validation for note title?
 class Title(Field):
     def __init__(self, title: str):
         super().__init__(title)
 
 
-# Do we need some form of validation for notes?
 class Content(Field):
     def __init__(self, content: str):
         super().__init__(content)
@@ -37,14 +35,13 @@ class Tag(Field):  # add strip
         tag = self.create_tag(tag)
         super().__init__(tag)
 
-    # def __str__
 
     def create_tag(self, tag):
         tag = f"#{tag}"
         return tag
 
 
-# print(Tag('tag'))
+
 
 
 class Note:
@@ -142,6 +139,23 @@ class Note:
         except AttributeError:
             print("Error: The note doesn't have content or a title set.")
 
+    def edit_title(self):
+        try:
+            is_change = input(
+                f"Do you want to change the title '{self.title.value}' for the note'? (y/n): "
+            ).lower()
+            if is_change == "y":
+                new_title = input("Enter new title for this note: ")
+                if len(new_title) > 1000:
+                    print("Title length should not exceed 1000 symbols.")
+                else:
+                    self.title.value = new_title
+                    print(f"The '{self.title.value}'  has been updated.")
+            else:
+                print("No changes were made.")
+        except AttributeError:
+            print("Error: The note doesn't have content or a title set.")
+
 
 class NotesBook(UserDict):
     def __init__(self):
@@ -188,17 +202,17 @@ book.add_note(Note().create_note())
 
 # Edit the content of the note
 # title = created_note.title.value
-# to_edit = book.find_note("title2")
+to_edit = book.find_note("title2")
 
 print(book)
 
 # book.delete_note("title1")
 
 
-# print(book)
 
-# edited_note = to_edit.edit_content()
+edited_note = to_edit.edit_title()
 
+print(book)
 
 # print(edited_note)
 
