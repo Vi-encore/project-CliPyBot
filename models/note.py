@@ -35,13 +35,9 @@ class Tag(Field):  # add strip
         tag = self.create_tag(tag)
         super().__init__(tag)
 
-
     def create_tag(self, tag):
         tag = f"#{tag}"
         return tag
-
-
-
 
 
 class Note:
@@ -156,6 +152,8 @@ class Note:
         except AttributeError:
             print("Error: The note doesn't have content or a title set.")
 
+    # def edit_tags(self):
+
 
 class NotesBook(UserDict):
     def __init__(self):
@@ -207,7 +205,6 @@ to_edit = book.find_note("title2")
 print(book)
 
 # book.delete_note("title1")
-
 
 
 edited_note = to_edit.edit_title()
