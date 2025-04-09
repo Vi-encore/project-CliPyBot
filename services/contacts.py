@@ -1,66 +1,96 @@
+import csv
+from pathlib import Path
+from datetime import datetime as dtdt
 from colorama import Fore, Back, Style
 from decorators.decorators import input_error, check_arguments
 from models.contact import Record
 from helpers.helpers import load_contacts, save_contacts
+from rich.console import Console
+from rich.table import Table
+from rich import box
+from helpers.helpers import typing_input, typing_output, show_contact_in_table, show_all_contacts_table
+
+console = Console()
 
 book = load_contacts()
 
 # ADD NEW CONTACT
 @input_error
 def add():
-    name = input("Contact name: ").strip()
+    name = typing_input("Contact name: (str): ")
     if not name:
-        print(Fore.RED + "Name is required to create a contact." + Style.RESET_ALL)
+        console.print("Name is required to create a contact. ❗⚠️ ", style="red italic") 
         return 1
 
     record = book.find(name)
     if not record:
         record = Record(name)
         book.add_record(record)
-        print(Fore.GREEN + "New contact created." + Style.RESET_ALL)
+        typing_output( "New contact created.")
     else:
-        print(Fore.YELLOW + "Contact already exists. Updating details..." + Style.RESET_ALL)
+         typing_output("Contact already exists.")
+         typing_output("Updating details...")
 
     # Loop for phone
     while True:
-        phone = input("Contact phone (press Enter to skip): ").strip()
+        phone = typing_input("Contact phone (press Enter to skip): (num) ").strip()
         if not phone:
             break
         try:
             record.add_phone(phone)
             break
         except Exception as e:
-            print(Fore.RED + "Invalid phone. Please try again." + Style.RESET_ALL)
+            console.print("Invalid phone. ❗⚠️ ", style="red italic")
+            typing_output("Please try again. ", color="yellow", s_style="italic")
 
     # Loop for email
     while True:
-        email = input("Contact email (press Enter to skip): ").strip()
+        email = typing_input("Contact email (press Enter to skip): (str): ").strip()
         if not email:
             break
         try:
             record.add_email(email)
             break
         except Exception as e:
-            print(Fore.RED + "Invalid email. Please try again." + Style.RESET_ALL)
+            console.print("Invalid email ❗⚠️ ", style="red italic")
+            typing_output("Please try again. ", color="yellow", s_style="italic")
 
     # Loop for birthday
     while True:
-        birthday = input("Contact birthday (dd.mm.yyyy, press Enter to skip): ").strip()
+        birthday = typing_input("Contact birthday (dd.mm.yyyy, press Enter to skip): (str) ").strip()
         if not birthday:
             break
         try:
             record.add_birthday(birthday)
             break
         except Exception as e:
-            print(Fore.RED + "Invalid birthday. Please use format dd.mm.yyyy." + Style.RESET_ALL)
+            console.print("Invalid birthday format.❗⚠️ ", style="red italic")
+            typing_output("Please use the format dd.mm.yyyy. ", color="yellow", s_style="italic")
 
     save_contacts(book)
 
-    print(Fore.GREEN + f'Contact "{name}" saved successfully.' + Style.RESET_ALL)
-    print("Contact details:")
-    print(record)
+    typing_output(f'Contact "{name}" saved successfully.')
+    print('')
+    show_contact_in_table(record)
+    print('')
     return 0
 
+# FIND CONTACT
+@check_arguments(1)
+@input_error
+def find(*args: tuple):
+    name = " ".join(args)
+    record = book.find(name)
+
+    if not record:
+        print(Fore.RED + f'Contact "{name}" not found.' + Style.RESET_ALL)
+        return 1
+
+    typing_output("Contact found:")
+    print('')
+    show_contact_in_table(record)
+    print('')
+    
 # REMOVE CONTACT
 @check_arguments(1)
 @input_error
@@ -73,35 +103,33 @@ def remove(*args: tuple):
         print(Fore.RED + f'Contact "{name}" not found.' + Style.RESET_ALL)
         return 1
 
-    print(Fore.YELLOW + "Contact found:" + Style.RESET_ALL)
-    print(record)  # shows all details (phones, emails, birthday, etc.)
+    typing_output( "Contact found:")
+    print('')
+    show_contact_in_table(record)
+    print('')
 
-    confirmation = input(f'Are you sure you want to delete "{name}"? (y/n): ').strip().lower()
+    confirmation = typing_input(f'Are you sure you want to delete "{name}"? (y/n): ').strip().lower()
     if confirmation == 'y':
         book.delete(name)
-        print(Fore.GREEN + f'Contact "{name}" has been deleted.' + Style.RESET_ALL)
+        typing_output(f'Contact "{name}" has been deleted.')
         save_contacts(book)
         return 0
     else:
-        print(Fore.YELLOW + "Deletion cancelled." + Style.RESET_ALL)
+        typing_output("Deletion cancelled.", color="yellow", s_style="italic")
+        print('')
         return 1
 
 # ALL CONTACTS
 @input_error
 def all():
     if not book.data:
-        print(f'No records found')
+        typing_output(f'No records found')
         return 1
-    
-    for record in book.data.values():
-        print(Fore.GREEN + f'{record.name}:' + Style.RESET_ALL)
-        for phone in record.phones:
-            print(f'--tel:{phone}')
-        for email in record.emails:
-            print(f'--email:{email}')
-        if record.birthday:
-            print(f'--birthday:{record.birthday}')
-
+    typing_output(f'📒 All contacts:')
+    print('')
+    records = book.data.values()
+    show_all_contacts_table(records)
+    print('')
     return 0
 
 #==============
@@ -324,5 +352,51 @@ def update_birthday(*args:tuple):
 # CLOSE
 def close():
     save_contacts(book)
-    print(Back.LIGHTWHITE_EX + Fore.BLACK + 'Goodbye. Data saved' + Style.RESET_ALL)
+    typing_output('Goodbye 🐇')
+    typing_output('All data saved! 💾')
     return 0
+
+# EXPORT TO CSV
+@input_error
+def export_contacts_to_csv():
+    today = dtdt.now().strftime("%d.%m.%Y")
+    filename = f"contacts_{today}.csv"
+    
+    STORAGE_DIR = Path(__file__).parent.parent / "storage"
+    STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+    
+    default_path = STORAGE_DIR / filename
+    
+    dir_path = input(f"Enter the path to save the CSV file (press Enter for default save): ").strip()
+    if dir_path:
+        filepath = Path(dir_path) / filename
+    else:
+        filepath = default_path
+
+    # Check if the directory exists
+    if not filepath.parent.exists():
+        print(Fore.RED + f"Error: The directory '{filepath.parent}' does not exist." + Style.RESET_ALL)
+        create_dir = input(f"Would you like to create the directory '{filepath.parent}'? (y/n): ").strip().lower()
+        if create_dir == 'y':
+            filepath.parent.mkdir(parents=True, exist_ok=True)
+            print(f"Directory '{filepath.parent}' created.")
+        else:
+            print("Aborting export.")
+            return
+
+    # Check if the file is writable (optional, we just try opening it for writing)
+    try:
+        with filepath.open('w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['Name', 'Phones', 'Emails', 'Birthday'])
+            for record in book.data.values():
+                writer.writerow([
+                    record.name.value,
+                    ', '.join(p.value for p in record.phones),
+                    ', '.join(e.value for e in record.emails),
+                    record.birthday.value if record.birthday else ''
+                ])
+        print(Fore.GREEN + f"Contacts saved to: {filepath}" + Style.RESET_ALL)
+    
+    except (OSError, IOError) as e:
+        print(Fore.RED + f"Error writing to file: {e}" + Style.RESET_ALL)
