@@ -33,12 +33,17 @@ def main():
             contacts.close()
             break
         elif cmd == 'hello':
-            typing_output('Hello❗ I am your assistant 👤, how can I help you❓ ')
+            typing_output('Hello, Neo...  ')
+            typing_output('I am your assistant bot. ')
+            typing_output('I can help you with your contacts and notes. ')
+            typing_output('To see the list of available commands, please type "help". ')
         elif cmd == 'help':
             show_help()
         # Contact commands 
         elif cmd == 'add contact': #()
             contacts.add()
+        elif cmd == 'find contact': #(name)
+            contacts.find(*args)
         elif cmd == 'remove contact': #(name)
             contacts.remove(*args)
         elif cmd == 'all contacts': #()

@@ -8,7 +8,7 @@ from helpers.helpers import load_contacts, save_contacts
 from rich.console import Console
 from rich.table import Table
 from rich import box
-from helpers.helpers import typing_input, typing_output
+from helpers.helpers import typing_input, typing_output, show_contact_in_table, show_all_contacts_table
 
 console = Console()
 
@@ -70,10 +70,27 @@ def add():
     save_contacts(book)
 
     typing_output(f'Contact "{name}" saved successfully.')
-    print("Contact details:")
-    print(record)
+    print('')
+    show_contact_in_table(record)
+    print('')
     return 0
 
+# FIND CONTACT
+@check_arguments(1)
+@input_error
+def find(*args: tuple):
+    name = " ".join(args)
+    record = book.find(name)
+
+    if not record:
+        print(Fore.RED + f'Contact "{name}" not found.' + Style.RESET_ALL)
+        return 1
+
+    typing_output("Contact found:")
+    print('')
+    show_contact_in_table(record)
+    print('')
+    
 # REMOVE CONTACT
 @check_arguments(1)
 @input_error
@@ -86,35 +103,33 @@ def remove(*args: tuple):
         print(Fore.RED + f'Contact "{name}" not found.' + Style.RESET_ALL)
         return 1
 
-    print(Fore.YELLOW + "Contact found:" + Style.RESET_ALL)
-    print(record)  # shows all details (phones, emails, birthday, etc.)
+    typing_output( "Contact found:")
+    print('')
+    show_contact_in_table(record)
+    print('')
 
-    confirmation = input(f'Are you sure you want to delete "{name}"? (y/n): ').strip().lower()
+    confirmation = typing_input(f'Are you sure you want to delete "{name}"? (y/n): ').strip().lower()
     if confirmation == 'y':
         book.delete(name)
-        print(Fore.GREEN + f'Contact "{name}" has been deleted.' + Style.RESET_ALL)
+        typing_output(f'Contact "{name}" has been deleted.')
         save_contacts(book)
         return 0
     else:
-        print(Fore.YELLOW + "Deletion cancelled." + Style.RESET_ALL)
+        typing_output("Deletion cancelled.", color="yellow", s_style="italic")
+        print('')
         return 1
 
 # ALL CONTACTS
 @input_error
 def all():
     if not book.data:
-        print(f'No records found')
+        typing_output(f'No records found')
         return 1
-    
-    for record in book.data.values():
-        print(Fore.GREEN + f'{record.name}:' + Style.RESET_ALL)
-        for phone in record.phones:
-            print(f'--tel:{phone}')
-        for email in record.emails:
-            print(f'--email:{email}')
-        if record.birthday:
-            print(f'--birthday:{record.birthday}')
-
+    typing_output(f'📒 All contacts:')
+    print('')
+    records = book.data.values()
+    show_all_contacts_table(records)
+    print('')
     return 0
 
 #==============
