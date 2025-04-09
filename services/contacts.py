@@ -485,20 +485,23 @@ def export_contacts_to_csv():
         console.print(f"Error writing to file: {e} 🚨 ", style="red")
 
 
-def edit_contact():
+def edit_contact(): #one func for user experience (edit email, numbers etc)
     all()
-    name = input("For whom do you want to change info? (name)").lower()
+    name = input("For whom do you want to change info? (name)")
     what_change = input("What info do you want to change? (email, phone)")
     if what_change == "email":
         contact = find(name)
-        emails_to_change = [email.value for email in contact.emails]
+        # print(book.find(name).emails)
+        emails_to_change = [email.value for email in book.find(name).emails]
         action = input(
             "Do you want to edit all tags or specific ones? (all/specific): "
         ).lower()
-        if action == 'specific':
+        if action == "specific":
             for index, email in enumerate(emails_to_change, 1):
                 print(f"{index}. {email}")
-                email_indices = input("Enter the number of email you want to edit:").strip()
+                email_indices = input(
+                    "Enter the number of email you want to edit:"
+                ).strip()
                 if not email_indices:  # Check if the input is empty
                     print("You did not enter any value.")
                     try_again = input("Would you like to try again? (y/n): ").lower()
@@ -529,6 +532,8 @@ def edit_contact():
                                         )
                                         break
                                 else:
-                                      # Update the tag
+                                    change_email(
+                                        name, email, new_email
+                                    )  # Update the email
                                     break
                         break
