@@ -5,7 +5,7 @@ from decorators.decorators import input_error, check_arguments
 from models.contact import Record
 from helpers.helpers import save_contacts
 from rich.console import Console
-from helpers.create_table import show_contact_in_table, show_all_contacts_table, show_birthdays_table
+from helpers.create_table import show_contact_in_table, show_all_contacts_table, show_birthdays_table, show_options_for_query
 from helpers.typing_effect import typing_output, typing_input
 from data.state import book
 
@@ -85,18 +85,64 @@ def add():
     return 0
 
 # FIND CONTACT
-@check_arguments(1)
 @input_error
-def find(*args: tuple):
-    name = " ".join(args)
-    record = book.find(name)
-
-    if not record:
-        no_record_message(name)
+def find():
+    print('')
+    show_options_for_query()
+    print('')
+    
+    # Loop for query
+    while True:
+        query = typing_input("How do you want to search (Enter the number of field): (num) ").strip().lower()
+        
+        if not query:
+            typing_output("No input provided❗", color="yellow")
+            typing_output("You can enter any other command")
+            return 1
+        
+        if query not in ["1", "2", "3", "4"]:
+            typing_output("Invalid option. Please enter a number between 1 and 4. ❗", color="yellow")
+            continue
+        break
+    
+    # Get args based on query
+    if query == "1": # search by name
+        args = typing_input("Enter the name of the contact: (str): ").strip().split() 
+    elif query == "2":
+        args = typing_input("Enter the phone number: (num): ").strip().split()
+    elif query == "3":
+        args = typing_input("Enter the email address: (str): ").strip().split()
+    elif query == "4":
+        args = typing_input("Enter the birthday (dd.mm.yyyy): (str): ").strip().split()
+    else:
+        typing_output("Invalid option. Please enter a number between 1 and 4. ❗", color="yellow")
         return 1
-
+    if not args:
+        typing_output("No input provided. Please enter a valid query. ❗", color="yellow")
+        return 1
+    
+    # Call the find method with the appropriate arguments
+    if query == "1": # search by name
+        result = book.find(" ".join(args), by_name=True)
+    elif query == "2": # search by phone
+        result = book.find(" ".join(args), by_phone=True)
+    elif query == "3": # search by email
+        result = book.find(" ".join(args), by_email=True)
+    elif query == "4": # search by birthday
+        result = book.find(" ".join(args), by_birthday=True)
+    else:
+        typing_output("Invalid option. Please enter a number between 1 and 4. ❗", color="yellow")
+        return 1
+    
+    if not result:
+        typing_output("No record found. ❗", color="yellow")
+        return 1
+    # If a record is found, show the contact details
+    
+    print('')
     typing_output("Contact found:")
-    show_contact(record) # show contact details in table
+    show_all_contacts_table(result) # show contacts details in table
+    print('')
     return 0
 
 # REMOVE CONTACT

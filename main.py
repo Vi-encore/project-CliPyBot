@@ -40,8 +40,8 @@ def main():
         # Contact commands 
         elif cmd == 'add contact': #()
             contacts.add()
-        elif cmd == 'find contact': #(name)
-            contacts.find(*args)
+        elif cmd == 'find contact': #()
+            contacts.find()
         elif cmd == 'remove contact': #(name)
             contacts.remove(*args)
         elif cmd == "all contacts":  # ()

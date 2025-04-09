@@ -14,7 +14,7 @@ def show_contact_in_table(record):
         show_header=True,               # Show header
         header_style="bold green",      # Customize header style
         box=box.ROUNDED,                # Customize table shape
-        title=f"{name} 👨🏻‍💻",             # Title for the table
+        title=f"{name} 👨",             # Title for the table
         title_justify="center",         # Center the title
         title_style="bold dark_green", # Title style
         )
@@ -83,5 +83,29 @@ def show_birthdays_table(birthdays):
         
         table.add_row(record['name'], record['congratulation_date'] or "-")
         table.add_section()  # Adds a separating line between contacts
+
+    console.print(table)
+    
+# SHOW QUERY OPTIONS
+def show_options_for_query():
+    """ Display query options in a styled table """
+    table = Table(
+        show_header=True,
+        header_style="bold green",
+        box=box.ROUNDED,
+        title="Query Options 🔍",
+        title_justify="center",
+        title_style="bold dark_green",
+    )
+    table.add_column("Option", style="bold white on green", width=20)
+    table.add_column("Description", justify="left")
+
+    table.add_row("1", "Search by [bold cyan]name[/]")
+    table.add_section()  # Adds a separating line between contacts
+    table.add_row("2", "Search by [bold cyan]phone number[/]")
+    table.add_section()  # Adds a separating line between contacts
+    table.add_row("3", "Search by [bold cyan]email[/] address")
+    table.add_section()  # Adds a separating line between contacts
+    table.add_row("4", "Search by [bold cyan]birthday[/]")
 
     console.print(table)
