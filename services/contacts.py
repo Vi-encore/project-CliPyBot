@@ -503,7 +503,7 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
     name = input("For whom do you want to change info? (name)")
     what_change = input("What info do you want to change? (email, phone)")
     if what_change == "email":
-        contact = find(name)
+        # contact = find(name)
         # print(book.find(name).emails)
         emails_to_change = [email.value for email in book.find(name).emails]
         action = input(
