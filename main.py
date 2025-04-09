@@ -3,7 +3,6 @@ from helpers.helpers import parse_input
 from services.shared import show_help, close, hello, goodbye, greeting
 from helpers.typing_effect import typing_input, typing_output
 from rich.console import Console
-from helpers.matrix_effect import matrix_drop
 
 # Initialize Console for rich output
 console = Console()
@@ -42,9 +41,11 @@ def main():
         # Contact commands
         elif cmd == "add contact":  # ()
             contacts.add()
-        elif cmd == "find contact":  # (name)
-            contacts.find(*args)
-        elif cmd == "remove contact":  # (name)
+        elif cmd == 'find contact': #(choose search type)
+            contacts.find()
+        elif cmd == "edit contact":  # ()
+            contacts.edit_contact()
+        elif cmd == 'remove contact': #(name)
             contacts.remove(*args)
         elif cmd == "all contacts":  # ()
             contacts.all()
@@ -70,12 +71,11 @@ def main():
             contacts.show_birthday(*args)
         elif cmd == "update birthday":  # (name, new birthday)
             contacts.update_birthday(*args)
-        elif cmd == 'all birthdays': #(name, days_to_upcoming)
+        elif cmd == 'all birthdays': #(days_to_upcoming)
             contacts.all_birthdays(*args)
         elif cmd == 'export contacts': #()
             contacts.export_contacts_to_csv()
-        elif cmd == "edit contact":  # (name, days_to_upcoming)
-            contacts.edit_contact()
+
         # Notes commands
         # logic for notes
         else:
