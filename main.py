@@ -1,42 +1,49 @@
-from colorama import Fore, Back, Style
 from services import contacts
-from helpers.helpers import parse_input
+from helpers.helpers import parse_input, show_help, typing_output, typing_input
+from rich.console import Console
+from colorama import Fore, Style
 
+# Initialize Console for rich output
+console = Console()
+   
 def main():
     '''
         Main function for the assistant bot
-        takes following commands:add
-        - hello - greets the user
-        - add <name> <phone> - adds a contact
-        - change <name> <old_phone> <new_phone> - replace phone number 
-        - phone <name> - shows all phones of a contact
-        - all - shows all contacts
-        - add-birthday <name> <birthday>- add birthday to the contact
-        - show-birthday <name> - show birthday date of the contact
-        - birthdays - show all upcoming birthdays for the next week (workdays)
-        - close/exit - closes the bot
+        that works with contacts and notes.
     '''
-    print( Back.LIGHTWHITE_EX + Fore.BLACK + "Welcome to the assistant bot!" + Style.RESET_ALL)
+    typing_output("⚡ Welcome to the Assistant Bot ⚡")
+    typing_output("Loading... Please wait...")
     print('')
+
+
     while True:
-        user_input = input(Fore.BLUE + 'Enter a command: ' + Style.RESET_ALL)
+        user_input = typing_input('Enter a command </>: ')
         if user_input.strip() == '':
-            print(Fore.YELLOW + 'Please enter a command.')
+            console.print('No command entered ⚠️', style='red bold')
+            typing_output('Please enter a command. ', color='yellow', s_style='italic')
+            print('')
             continue
         
         cmd, *args = parse_input(user_input)
         
         if cmd == '':
-            print(Fore.YELLOW + 'Please enter a command.')
+            console.print('Please enter a command.', style='yellow italic')
             continue
         elif cmd in ["close", "exit"]:
             contacts.close()
             break
         elif cmd == 'hello':
-            print(Fore.GREEN + 'Hello! I am your assistant, how can I help you?' + Style.RESET_ALL)
+            typing_output('Hello, Neo...  ')
+            typing_output('I am your assistant bot. ')
+            typing_output('I can help you with your contacts and notes. ')
+            typing_output('To see the list of available commands, please type "help". ')
+        elif cmd == 'help':
+            show_help()
         # Contact commands 
         elif cmd == 'add contact': #()
             contacts.add()
+        elif cmd == 'find contact': #(name)
+            contacts.find(*args)
         elif cmd == 'remove contact': #(name)
             contacts.remove(*args)
         elif cmd == 'all contacts': #()
@@ -65,10 +72,15 @@ def main():
             contacts.update_birthday(*args)
         elif cmd == 'all birthdays': #(name, days_to_upcoming)
             contacts.all_birthdays()
+        elif cmd == 'export contacts': #()
+            contacts.export_contacts_to_csv()
         # Notes commands
         # logic for notes
         else:
-            print(Fore.YELLOW + 'Unknown command. To see all the available commands, type "help".' + Style.RESET_ALL)
-
+            print('')
+            console.print('Unknown command ⚠️', style='red bold')
+            console.print('To get info about available commands, please type [blue]"help"[/] ', style='yellow italic')
+            print('')
+         
 if __name__ == '__main__':
     main()

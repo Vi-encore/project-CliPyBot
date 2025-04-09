@@ -113,6 +113,14 @@ class Record():
         birthday_str = f" birthday: {self.birthday.value}" if self.birthday else ""
         return f"Contact name: {self.name.value}, phones: {phone_str}, emails: {email_str},{birthday_str}"
 
+    def get_display_data(self):
+        """Returns name, list of phones, list of emails, and birthday (as str or None)"""
+        name = self.name.value
+        phones = [phone.value for phone in self.phones]
+        emails = [email.value for email in self.emails]
+        birthday = self.birthday.value if self.birthday else None
+        return name, phones, emails, birthday
+    
 # AddressBook
 class AddressBook:
     def __init__(self):
