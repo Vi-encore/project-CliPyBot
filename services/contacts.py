@@ -1,5 +1,6 @@
 import csv
 from pathlib import Path
+import datetime as dt
 from datetime import datetime as dtdt
 from decorators.decorators import input_error, check_arguments
 from models.contact import Record
@@ -354,15 +355,28 @@ def show_birthday(*args:tuple):
 
 # SHOW ALL BIRTHDAYS
 @input_error
-def all_birthdays():
-    birthdays = book.get_upcoming_birthdays()
+def all_birthdays(*args):
+    try:
+        days = int(args[0]) if args else 7
+    except ValueError:
+        print("Please enter a valid number of days.")
+        return
+    birthdays = book.get_birthday_in_days(days)
+    today = dt.date.today()
+    day_word = "day" if days == 1 else "days"
+
     if not birthdays:
-        print('No upcoming birthdays')
+        print(f"No upcoming birthdays in the next {days} {day_word}")
     else:
-        print('')
-        show_birthdays_table(birthdays)
-        print('')
-    return 0
+        print(f"Birthdays in the next {days} {day_word}:")
+        for birthday in birthdays:
+            birthday_date = dtdt.strptime(birthday['birthday'], "%d.%m.%Y").date()
+            delta_days = (birthday_date - today).days
+            
+            word_day = "day" if delta_days == 1 else "days"
+
+            print(f"{birthday['name']} has birthday on {birthday['birthday']} in {delta_days} {word_day}.")
+
     
 @check_arguments(2)
 @input_error
