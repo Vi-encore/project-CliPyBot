@@ -1,8 +1,9 @@
 import re
 import datetime as dt
-from datetime import datetime as dtdt
+from datetime import datetime as dtdt, timedelta
 from decorators.decorators import exception_handler
 from helpers.validators import validate_and_normalize_phone
+from helpers.validators import standardize_name
 
 #  Field
 class Field:
@@ -16,10 +17,16 @@ class Field:
 # Name
 class Name(Field):
     def __init__(self, name: str):
-        super().__init__(name)
+        standardized_name = self.normalize_name(name)
+        super().__init__(standardized_name)
 
+    def normalize_name(self, name: str):
+        standardized_name = standardize_name(name)
+        if not standardized_name:
+            raise ValueError(f'Invalid name format')
+        return standardized_name
 
-# Phone
+      
 class Phone(Field):
     def __init__(self, phone: str):
         valid_phone = self.validate_phone(phone)
@@ -144,19 +151,16 @@ class AddressBook:
         if name in self.data:
             del self.data[name]
         else:
-            raise ValueError(f"Record {name} is not found")
+            raise ValueError(f'Record {name} is not found')
 
+            
     @exception_handler
-    def get_upcoming_birthdays(self) -> list:
+    def get_birthday_in_days(self, days: int) -> list:
         result = []
         today = dt.date.today()
         current_year = today.year
+        given_date = today + timedelta(days=days) 
 
-        # Calculate the range for next Monday to Friday
-        days_to_monday = (7 - today.weekday()) % 7
-        next_monday = today + dt.timedelta(days=days_to_monday)
-        next_friday = next_monday + dt.timedelta(days=4)
-        days_to_next_friday = (next_friday - today).days
 
         for record in self.data.values():
             if not record.birthday:
@@ -164,32 +168,19 @@ class AddressBook:
             try:
                 birthday_str = record.birthday.value
                 birthday_obj = dtdt.strptime(birthday_str, "%d.%m.%Y").date()
-            except ValueError:
-                raise ValueError(f"Invalid date format for {record.name.value}")
+            except ValueError: 
+                raise ValueError(f"Invalid date format for {record.name.value}")  
             # get birthday this year
-            birthday_this_year = dt.date(
-                current_year, birthday_obj.month, birthday_obj.day
-            )
+            birthday_this_year = dt.date(current_year, birthday_obj.month, birthday_obj.day)
             if birthday_this_year < today:
-                birthday_this_year = dt.date(
-                    current_year + 1, birthday_obj.month, birthday_obj.day
-                )
-
-            days_to_birthday = (birthday_this_year - today).days
-            day_of_birthday = birthday_this_year.weekday()
-
-            if days_to_birthday < days_to_next_friday:
-                congratulation_date = birthday_this_year
-                # If birthday is on Saturday (5) or Sunday (6), move to Monday
-                if day_of_birthday in [5, 6]:
-                    congratulation_date = next_monday
-
-                result.append(
-                    {
-                        "name": record.name.value,
-                        "congratulation_date": congratulation_date.strftime("%d.%m.%Y"),
-                    }
-                )
+                birthday_this_year = dt.date(current_year + 1, birthday_obj.month, birthday_obj.day)
+ 
+        
+            if today <= birthday_this_year <= given_date:
+                result.append({
+                    'name': record.name.value, 
+                    'birthday': birthday_this_year.strftime("%d.%m.%Y")
+                })
 
         return result
 

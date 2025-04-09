@@ -67,7 +67,8 @@ def execute_command(cmd: str, args: list):
         contacts.all_birthdays()
     elif cmd == 'export contacts':
         contacts.export_contacts_to_csv()
-
+    elif cmd == "edit contact":  # (name, days_to_upcoming)
+        contacts.edit_contact()
 def main():
     '''
         Main function for the assistant bot
