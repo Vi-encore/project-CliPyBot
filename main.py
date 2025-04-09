@@ -71,7 +71,7 @@ def main():
         elif cmd == 'update birthday': #(name, new birthday)
             contacts.update_birthday(*args)
         elif cmd == 'all birthdays': #(name, days_to_upcoming)
-            contacts.all_birthdays()
+            contacts.all_birthdays(*args)
         elif cmd == 'export contacts': #()
             contacts.export_contacts_to_csv()
         # Notes commands
