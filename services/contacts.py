@@ -30,7 +30,7 @@ def show_contact(record):
 def add():
     name = typing_input("Contact name: (str): ")
     if not name:
-        console.print("Name is required to create a contact. ❗⚠️ ", style="red italic") 
+        console.print("Name is required to create a contact. ❗", style="red") 
         return 1
 
     record = book.find(name)
