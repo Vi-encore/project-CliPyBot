@@ -6,42 +6,45 @@ from rich.console import Console
 
 # Initialize Console for rich output
 console = Console()
-   
+
+
 def main():
-    '''
-        Main function for the assistant bot
-        that works with contacts and notes.
-    '''
+    """
+    Main function for the assistant bot
+    that works with contacts and notes.
+    """
     greeting()
 
     while True:
-        user_input = typing_input('Enter a command </>: ')
-        if user_input.strip() == '':
-            console.print('No command entered ⚠️', style='red bold')
-            typing_output('Please enter a command. ', color='yellow', s_style='italic')
-            print('')
+        user_input = typing_input("Enter a command </>: ")
+        if user_input.strip() == "":
+            console.print("No command entered ⚠️", style="red bold")
+            typing_output("Please enter a command. ", color="yellow", s_style="italic")
+            print("")
             continue
 
         cmd, *args = parse_input(user_input)
-        
-        if cmd == '':
-            console.print('Please enter a command.', style='yellow italic')
+
+        if cmd == "":
+            console.print("Please enter a command.", style="yellow italic")
             continue
         elif cmd in ["close", "exit", "quit"]:
             close()
             break
-        elif cmd == 'hello':
+        elif cmd == "hello":
             hello()
-        elif cmd == 'help':
-            show_help() 
-        elif cmd == 'goodbye': # to close presentation
+        elif cmd == "help":
+            show_help()
+        elif cmd == "goodbye":  # to close presentation
             goodbye()
             break
-        # Contact commands 
-        elif cmd == 'add contact': #()
+        # Contact commands
+        elif cmd == "add contact":  # ()
             contacts.add()
-        elif cmd == 'find contact': #()
+        elif cmd == 'find contact': #(choose search type)
             contacts.find()
+        elif cmd == "edit contact":  # ()
+            contacts.edit_contact()
         elif cmd == 'remove contact': #(name)
             contacts.remove(*args)
         elif cmd == "all contacts":  # ()
@@ -68,17 +71,22 @@ def main():
             contacts.show_birthday(*args)
         elif cmd == "update birthday":  # (name, new birthday)
             contacts.update_birthday(*args)
-        elif cmd == "all birthdays":  # (name, days_to_upcoming)
-            contacts.all_birthdays()
+        elif cmd == 'all birthdays': #(days_to_upcoming)
+            contacts.all_birthdays(*args)
         elif cmd == 'export contacts': #()
             contacts.export_contacts_to_csv()
+
         # Notes commands
         # logic for notes
         else:
-            print('')
-            console.print('Unknown command ⚠️', style='red bold')
-            console.print('To get info about available commands, please type [blue]"help"[/] ', style='yellow italic')
-            print('')
-         
-if __name__ == '__main__':
+            print("")
+            console.print("Unknown command ⚠️", style="red bold")
+            console.print(
+                'To get info about available commands, please type [blue]"help"[/] ',
+                style="yellow italic",
+            )
+            print("")
+
+
+if __name__ == "__main__":
     main()

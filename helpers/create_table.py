@@ -1,6 +1,7 @@
 from rich.console import Console
 from rich.table import Table
 from rich import box
+from datetime import datetime as dtdt
 
 # Initialize Console for rich output
 console = Console()
@@ -78,10 +79,19 @@ def show_birthdays_table(birthdays):
     )
     table.add_column("Upcoming Birthdays", style="bold white on green", width=20)
     table.add_column("Birthday", justify="left", width=20)
+    table.add_column("Days to birthday", justify="left", width=20)
 
+    today = dtdt.today().date()
+    
     for record in birthdays:
+        birthday_date = dtdt.strptime(record['birthday'], "%d.%m.%Y").date()
+        delta_days = (birthday_date - today).days
         
-        table.add_row(record['name'], record['congratulation_date'] or "-")
+        word_day = "day" if delta_days == 1 else "days"
+
+        # print(f"{record['name']} has birthday on {record['birthday']} in {delta_days} {word_day}.")
+        
+        table.add_row(record['name'], birthday_date.strftime("%d.%m.%Y"), f'{delta_days} {word_day}')
         table.add_section()  # Adds a separating line between contacts
 
     console.print(table)

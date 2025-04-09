@@ -15,3 +15,15 @@ def validate_and_normalize_phone(phone: str) -> str | None:
         return None
 
     return normalized_phone
+
+
+
+def standardize_name(name: str) -> str:
+    name = name.strip()
+
+    if not re.fullmatch(r'[a-zA-Z][a-zA-Z0-9]*', name):
+        return None
+
+    name = name.capitalize()
+
+    return name
