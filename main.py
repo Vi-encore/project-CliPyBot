@@ -3,7 +3,6 @@ from helpers.helpers import parse_input
 from services.shared import show_help, close, hello, goodbye, greeting
 from helpers.typing_effect import typing_input, typing_output
 from rich.console import Console
-from helpers.matrix_effect import matrix_drop
 
 # Initialize Console for rich output
 console = Console()
