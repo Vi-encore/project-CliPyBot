@@ -22,24 +22,18 @@ class Field:
 # Do we need some form of validation for note title?
 class Title(Field):
     def __init__(self, title: str):
-        if len(title) > 1000:
-            raise ValueError("Title length should not exceed 1000 symbols")
         super().__init__(title)
 
 
 # Do we need some form of validation for notes?
 class Content(Field):
     def __init__(self, content: str):
-        if len(content) > 20000:
-            raise ValueError("Content length should not exceed 20000 symbols")
         super().__init__(content)
 
 
 # Creating a tag
 class Tag(Field):  # add strip
     def __init__(self, tag: str):
-        if len(tag) > 25:
-            raise ValueError("Tag length should not exceed 25 symbols")
         tag = self.create_tag(tag)
         super().__init__(tag)
 
@@ -63,19 +57,67 @@ class Note:
         return f"Title: {self.title.value}, content: {self.content.value}, tags: {', '.join(tag.value for tag in self.tags)}."
 
     # @input_error  # will trigger ModuleNotFound error if run from here ???
-    def create_note(self):
+    def create_note(self):  # recursion
         try:
-            new_title = input("Enter a note title: ")
-            self.title = Title(new_title)
 
-            new_content = input("Enter note content: ")
-            self.content = Content(new_content)
+            def create_title():
+                new_title = input("Enter a note title: ")
+                if len(new_title) > 1000:
+                    print("Error: Title length should not exceed 1000 symbols.")
+                    try_again = input("Would you try again? (y/n): ").lower()
+                    if try_again == "y":
+                        return create_title()  # Recursive call if user wants to retry
+                    else:
+                        return None  # Exit without creating a title
+                return Title(new_title)  # Return valid Title instance
+
+            self.title = create_title()
+            if not self.title:
+                return None
+
+            def create_content():
+                new_content = input("Enter note content: ")
+                if len(new_content) > 1000:
+                    print("Error: Content length should not exceed 20000 symbols.")
+                    try_again = input("Would you try again? (y/n): ").lower()
+                    if try_again == "y":
+                        return create_content()  # Recursive call if user wants to retry
+                    else:
+                        return None  # Exit without creating a title
+                return Content(new_content)  # Return valid Title instance
+
+            self.content = create_content()
+            if not self.content:
+                return None
+
+            def create_tags():
+                tags_input = input("Enter your tag(s), separated by commas: ").split(
+                    ","
+                )
+                tags = [tag.strip() for tag in tags_input]
+
+                if len(tags) > 10:
+                    print("Error: You cannot enter more than 10 tags.")
+                    try_again = input("Would you try again? (y/n): ").lower()
+                    if try_again == "y":
+                        return create_tags()
+                    else:
+                        return []
+
+                for tag in tags:
+                    if len(tag) > 25:
+                        print(f"Error: Tag {tag} exceeds 25 characters")
+                        try_again = input("Would you try again? (y/n): ").lower()
+                        if try_again == "y":
+                            return create_tags()
+                        else:
+                            return []
+                return [Tag(tag) for tag in tags]
 
             create_tag = input("Want to add a tag? (y/n): ").lower()
             new_tags = []
             if create_tag == "y":
-                tags = input("Enter your tag(s), separated by commas: ").split(",")
-                new_tags = [Tag(tag.strip()) for tag in tags]
+                new_tags = create_tags()
 
             self.tags = new_tags
             return self  # Return the updated instance
@@ -83,29 +125,6 @@ class Note:
             print(f"Error: {e}")
             return None  # Return None in case of an error
 
-    # def edit_note(self, title):
-    #     # Search for the note by title in the data dictionary
-    #     note = self.data.get(title)
-
-    #     if not note:
-    #         return f"Note with title '{title}' does not exist."
-
-    #     # Display the current content of the note
-    #     print(f"Current Content: {note.content.value}")
-
-    #     # Ask the user for the new content
-    #     new_content = input(
-    #         "Enter new content (leave empty to keep the current content): "
-    #     )
-
-    #     # Update content if the user provides new content
-    #     if new_content.strip():
-    #         note.content = Content(new_content.strip())
-    #         self.data[title] = note  # Save the updated note back to the NotesBook
-    #         return f"Content of note with title '{title}' has been updated."
-    #     else:
-    #         return "No changes were made to the content."
-    # @input_error  # will trigger ModuleNotFound error if run from here ???
     def edit_content(self):
         try:
             is_change = input(
@@ -161,24 +180,24 @@ created_note = (
     note.create_note()
 )  # Ensure create_note() returns the `self` Note instance
 book.add_note(created_note)
-second_note = Note().create_note()
-book.add_note(second_note)
+# second_note = Note().create_note()
+# book.add_note(second_note)
 book.add_note(Note().create_note())
-book.add_note(Note().create_note())
+# book.add_note(Note().create_note())
 
 
 # Edit the content of the note
 # title = created_note.title.value
-to_edit = book.find_note("title2")
+# to_edit = book.find_note("title2")
 
 print(book)
 
-book.delete_note("title1")
+# book.delete_note("title1")
 
 
-print(book)
+# print(book)
 
-edited_note = to_edit.edit_content()
+# edited_note = to_edit.edit_content()
 
 
 # print(edited_note)
@@ -186,4 +205,4 @@ edited_note = to_edit.edit_content()
 # print(result)
 # print(book.find_note(second_note.title.value))
 # Display all notes in the NotesBook
-print(book)
+# print(book)
