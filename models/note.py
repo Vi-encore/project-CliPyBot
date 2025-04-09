@@ -152,7 +152,6 @@ class Note:
         except AttributeError:
             print("Error: The note doesn't have content or a title set.")
 
-    # def edit_tags(self):
     def edit_tags(self):
         try:
             # Display current tags without the `#` prefix
