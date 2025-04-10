@@ -3,19 +3,21 @@ all_available_commands = [
     'find contact',
     'remove contact',
     'all contacts',
-    'add phone',
-    'change phone',
+    #'add phone',
+    #'change phone',
     'show phone',
     'delete phone',
-    'add email',
-    'change email',
+    #'add email',
+    #'change email',
     'show email',
     'delete email',
-    'add birthday',
+    #'add birthday',
     'show birthday',
-    'update birthday',
+    # 'update birthday',
     'all birthdays',
-    'export contacts'
+    'export contacts',
+    'edit contact',
+    'expand contact'
 ]
 
 def commands():
