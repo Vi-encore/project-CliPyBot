@@ -96,7 +96,7 @@ class Note:
 
 class NotesBook:
     def __init__(self):
-        self.data{}
+        self.data = {}
 
     def __str__(self):
         return "\n".join(str(note) for note in self.data.values())
