@@ -1,4 +1,5 @@
 from models.contact import AddressBook
+from models.note import NotesBook
 from helpers.data_helper import save_data, load_data
 
 
@@ -24,4 +25,4 @@ def save_notes(notes):
     save_data(notes, "notes.pkl")
 
 def load_notes():
-    return load_data("notes.pkl", dict)
+    return load_data("notes.pkl", NotesBook)

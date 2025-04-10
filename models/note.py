@@ -70,7 +70,7 @@ class Note:
 
             def create_content():
                 new_content = input("Enter note content: ")
-                if len(new_content) > 1000:
+                if len(new_content) > 20000:
                     print("Error: Content length should not exceed 20000 symbols.")
                     try_again = input("Would you try again? (y/n): ").lower()
                     if try_again == "y":
@@ -278,8 +278,8 @@ book = NotesBook()
 # note = Note()
 # created_note = (
 #     note.create_note()
-# )  # Ensure create_note() returns the `self` Note instance
-# book.add_note(created_note)
+# )  ated_note)# Ensure create_note() returns the `self` Note instance
+# book.add_note(cre
 # second_note = Note().create_note()
 # book.add_note(second_note)
 book.add_note(Note().create_note())
