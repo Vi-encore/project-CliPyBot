@@ -217,6 +217,14 @@ def execute_command(cmd: str, args: list):
         notes.add()
     elif cmd == "show notes":
         notes.all()
+    elif cmd == "change note":
+        notes.change_note()
+    elif cmd == "delete note":
+        notes.delete_note(),
+    elif cmd == "find note":
+        notes.find(),
+    elif cmd == "export notes":
+        notes.export_notes_to_csv(),
 
 
 def main():

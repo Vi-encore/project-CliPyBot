@@ -100,27 +100,36 @@ def add():
 # FIND CONTACT
 @input_error
 def find():
-    print('')
+    print("")
     show_options_for_query()
-    print('')
-    
+    print("")
+
     # Loop for query
     while True:
-        query = typing_input("How do you want to search (Enter the number of field): (num) ").strip().lower()
-        
+        query = (
+            typing_input(
+                "How do you want to search (Enter the number of field): (num) "
+            )
+            .strip()
+            .lower()
+        )
+
         if not query:
             typing_output("No input provided❗", color="yellow")
             typing_output("You can enter any other command")
             return 1
-        
+
         if query not in ["1", "2", "3", "4"]:
-            typing_output("Invalid option. Please enter a number between 1 and 4. ❗", color="yellow")
+            typing_output(
+                "Invalid option. Please enter a number between 1 and 4. ❗",
+                color="yellow",
+            )
             continue
         break
-    
+
     # Get args based on query
-    if query == "1": # search by name
-        args = typing_input("Enter the name of the contact: (str): ").strip().split() 
+    if query == "1":  # search by name
+        args = typing_input("Enter the name of the contact: (str): ").strip().split()
     elif query == "2":
         args = typing_input("Enter the phone number: (num): ").strip().split()
     elif query == "3":
@@ -128,40 +137,47 @@ def find():
     elif query == "4":
         args = typing_input("Enter the birthday (dd.mm.yyyy): (str): ").strip().split()
     else:
-        typing_output("Invalid option. Please enter a number between 1 and 4. ❗", color="yellow")
+        typing_output(
+            "Invalid option. Please enter a number between 1 and 4. ❗", color="yellow"
+        )
         return 1
     if not args:
-        typing_output("No input provided. Please enter a valid query. ❗", color="yellow")
+        typing_output(
+            "No input provided. Please enter a valid query. ❗", color="yellow"
+        )
         return 1
-    
+
     # Call the find method with the appropriate arguments
-    if query == "1": # search by name
+    if query == "1":  # search by name
         result = book.find(" ".join(args), by_name=True)
-    elif query == "2": # search by phone
+    elif query == "2":  # search by phone
         result = book.find(" ".join(args), by_phone=True)
-    elif query == "3": # search by email
+    elif query == "3":  # search by email
         result = book.find(" ".join(args), by_email=True)
-    elif query == "4": # search by birthday
+    elif query == "4":  # search by birthday
         result = book.find(" ".join(args), by_birthday=True)
     else:
-        typing_output("Invalid option. Please enter a number between 1 and 4. ❗", color="yellow")
+        typing_output(
+            "Invalid option. Please enter a number between 1 and 4. ❗", color="yellow"
+        )
         return 1
-    
+
     if not result:
         typing_output("No record found. ❗", color="yellow")
         return 1
     # If a record is found, show the contact details
-    
-    print('')
+
+    print("")
     typing_output("Contact found:")
-    show_all_contacts_table(result) # show contacts details in table
-    print('')
+    show_all_contacts_table(result)  # show contacts details in table
+    print("")
     return 0
+
 
 # EDIT CONTACT
 @check_arguments(1)
 @input_error
-def edit_contact(): #one func for user experience (edit email, numbers etc)
+def edit_contact():  # one func for user experience (edit email, numbers etc)
     all()
     name = typing_input("For whom do you want to change info? (name)")
     what_change = typing_input("What info do you want to change? (email, phone)")
@@ -500,24 +516,27 @@ def all_birthdays(*args):
     except ValueError:
         console.print("Please enter a valid number of days.", style="yellow")
         return
-    
+
     birthdays = book.get_birthday_in_days(days)
     today = dt.date.today()
     day_word = "day" if days == 1 else "days"
 
     if not birthdays:
-        console.print(f"No upcoming birthdays in the next {days} {day_word}", style="yellow")
+        console.print(
+            f"No upcoming birthdays in the next {days} {day_word}", style="yellow"
+        )
         return 1
     else:
         typing_output(f"Birthdays in the next {days} {day_word}: ")
-        
+
         print("")
         show_birthdays_table(birthdays)  # show birthdays in table
         print("")
-        
+
     return 0
 
-# UPDATE BIRTHDAY  
+
+# UPDATE BIRTHDAY
 @check_arguments(2)
 @input_error
 def update_birthday(*args: tuple):
@@ -601,7 +620,9 @@ def export_contacts_to_csv():
 
     except (OSError, IOError) as e:
         console.print(f"Error writing to file: {e} 🚨 ", style="red")
-def edit_contact(): #one func for user experience (edit email, numbers etc)
+
+
+def edit_contact():  # one func for user experience (edit email, numbers etc)
     all()
     name = input("For whom do you want to change info? (name): ").title()
     if not book.find(name):
@@ -613,14 +634,12 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
         # print(book.find(name).emails)
         emails_to_change = [email.value for email in book.find(name).emails]
         if not len(book.find(name).emails):
-            print('No email to edit for that contact.')
+            print("No email to edit for that contact.")
             return
         while True:
             for index, email in enumerate(emails_to_change, 1):
                 print(f"{index}. {email}")
-            email_indices = input(
-                "Enter the number of email you want to edit:"
-            ).strip()
+            email_indices = input("Enter the number of email you want to edit:").strip()
             if not email_indices:  # Check if the input is empty
                 print("You did not enter any value.")
                 try_again = input("Would you like to try again? (y/n): ").lower()
@@ -650,27 +669,23 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
                                     )
                                     break
                             else:
-                                change_email(
-                                    name, email, new_email
-                                )  # Update the email
+                                change_email(name, email, new_email)  # Update the email
                                 break
                 break
-    #TODO phone bug (changes second phone if 2 phones in the list)
+    # TODO phone bug (changes second phone if 2 phones in the list)
     elif what_change == "phone":
         phones_to_change = [phone.value for phone in book.find(name).phones]
-        #print(phones_to_change, 'test')
+        # print(phones_to_change, 'test')
         while True:
             for index, phone in enumerate(phones_to_change, 1):
                 print(f"{index}. {phone}")
-            phone_indices = input(
-                "Enter the number of phone you want to edit:"
-            ).strip()
-            print(phone_indices, "PHONE INDICES")
+            phone_indices = input("Enter the number of phone you want to edit:").strip()
+            # print(phone_indices, "PHONE INDICES")
             if not phone_indices:
                 print("You did not enter any value.")
-                try_again = input('Would you like to try again? (y/n): ').lower()
+                try_again = input("Would you like to try again? (y/n): ").lower()
                 if try_again != "y":
-                    print('Phone has not been changed.')
+                    print("Phone has not been changed.")
                     return
             else:
                 phone_indices = [
@@ -678,7 +693,7 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
                     for index in phone_indices.split(",")
                     if index.isdigit()
                 ]
-                print(phone_indices, "PHONE INDICES")
+                # print(phone_indices, "PHONE INDICES")
                 for i in phone_indices:
                     if 0 <= i < len(phones_to_change):
                         while True:
@@ -691,12 +706,12 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
                                     "Would you like to try again? (y/n): "
                                 ).lower()
                                 if try_again != "y":
-                                    print(f"No changes were made to the phone '{phones_to_change[i]}'.")
+                                    print(
+                                        f"No changes were made to the phone '{phones_to_change[i]}'."
+                                    )
                                     break
                             else:
-                                change_phone(
-                                    name, phone, new_phone
-                                )
+                                change_phone(name, phone, new_phone)
                                 break
                 break
     elif what_change == "birthday":
@@ -705,7 +720,7 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
             new_birthday = input(f"Enter new birthday '{birthday_to_change}': ").strip()
             if not new_birthday:
                 print("You did not enter any value.")
-                try_again = input('Would you like to try again? (y/n): ').lower()
+                try_again = input("Would you like to try again? (y/n): ").lower()
                 if try_again != "y":
                     print("Birthday has not been changed.")
                     break
@@ -713,7 +728,8 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
                 update_birthday(name, new_birthday)
                 break
 
-def expand_contact(): #one func for better UX (expand user phones, emails, add birthday if doesn't exist)
+
+def expand_contact():  # one func for better UX (expand user phones, emails, add birthday if doesn't exist)
     all()
     name = input("What contact you want to expand?: ").title()
     if not book.find(name):
@@ -728,7 +744,9 @@ def expand_contact(): #one func for better UX (expand user phones, emails, add b
                 for index, phone in enumerate(existing_phones_list, 1):
                     print(f"{index}. {phone}")
 
-            phone_prompt = input("Enter the phone number you want to add to the contact: ")
+            phone_prompt = input(
+                "Enter the phone number you want to add to the contact: "
+            )
             if not phone_prompt:
                 print("You did not enter any value.")
                 try_again = input("Would you like to try again? (y/n): ").lower()

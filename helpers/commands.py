@@ -18,11 +18,14 @@ all_available_commands = [
     "export contacts",
     "edit contact",
     "expand contact",
-    "show notes",
-    "add note",
+    #########NOTES#################
+    "show notes", #done
+    "add note", #done 
     "find note",
-    "change note",
-    "delete note",
+    "change note", #done
+    "delete note", #done
+    "export notes",
+    "find note"
 ]
 
 
