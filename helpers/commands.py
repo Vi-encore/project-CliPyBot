@@ -25,8 +25,7 @@ all_available_commands = [
     "find note",
     "change note", #done
     "delete note", #done
-    "export notes",
-    "find note"
+    "export notes"
 ]
 
 

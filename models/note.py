@@ -47,7 +47,7 @@ class Note:
         self.tags = []
 
     # === TAGS ===
-    @input_error 
+    @input_error
     def add_tag(self, tag: str) -> None:
         if len(self.tags) < 10 and len(tag) <= 25:
             self.tags.append(Tag(tag))
@@ -61,7 +61,7 @@ class Note:
                 return True
         raise ValueError(f"Tag '{tag}' not found.")
 
-    @input_error 
+    @input_error
     def edit_tag(self, old_tag: str, new_tag: str) -> None:
         for i, tag in enumerate(self.tags):
             if tag.value == old_tag:
@@ -70,7 +70,7 @@ class Note:
         raise ValueError(f"Tag '{old_tag}' not found.")
 
     # What it returns (maybe t.value)
-    @input_error 
+    @input_error
     def find_tag(self, tag: str) -> str | None:
         for t in self.tags:
             if t.value == tag:
@@ -78,14 +78,14 @@ class Note:
         return None
 
     # === CONTENT ===
-    @input_error 
+    @input_error
     def edit_content(self, new_content: str) -> None:
         if len(new_content) <= 20000:
             self.content = new_content
         else:
             raise ValueError("Content length should not exceed 20000 characters.")
 
-    @input_error 
+    @input_error
     def add_content(self, content: str) -> None:
         self.content = Content(content).value
 
@@ -93,7 +93,7 @@ class Note:
         self.content = ""
 
     # === TITLE ===
-    @input_error 
+    @input_error
     def edit_title(self, new_title: str) -> None:
         if len(new_title) <= 1000:
             self.title = new_title
@@ -124,7 +124,7 @@ class NotesBook:
     def __iter__(self):
         return iter(self.data.values())
 
-    @input_error 
+    @input_error
     def add_note(self, note: Note) -> None:
         self.data[note.title.value] = note
 
@@ -143,6 +143,23 @@ class NotesBook:
             # return f"Note {title} has been deleted"
         else:
             raise ValueError(f"Record {title} is not found")
+
+    @input_error
+    def search(
+        self, query: str, by_title=False, by_tag=False, by_content=False
+    ) -> list:
+        query = query.strip().lower()
+        results = []
+
+        for key, note in self.data.items():
+            if by_title and query in key.strip().lower():
+                results.append(note)
+            elif by_tag and any(query in tag.value.lower() for tag in note.tags):
+                results.append(note)
+            elif by_content and note.content and query in note.content.lower():
+                results.append(note)
+
+        return results
 
     def __str__(self) -> str:
         return "\n".join(str(note) for note in self.data)
