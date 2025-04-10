@@ -155,6 +155,11 @@ class AddressBook:
 
         return results
 
+    def find_by_name(self, name):
+        if name in self.data:
+            return self.data[name]
+        return None
+
     @exception_handler
     def delete(self, name: str):
         if name in self.data:

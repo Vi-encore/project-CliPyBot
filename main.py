@@ -70,6 +70,8 @@ def execute_command(cmd: str, args: list):
         contacts.edit_contact()
     elif cmd == "expand contact":
         contacts.expand_contact()
+    elif cmd == "delete contact":
+        contacts.delete_contact()
 def main():
     '''
         Main function for the assistant bot
