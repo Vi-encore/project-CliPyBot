@@ -65,7 +65,7 @@ class Note:
                 self.tags[i] = Tag(new_tag)
                 return
         raise ValueError(f"Tag '{old_tag}' not found.")
-    
+
     def find_tag(self, tag):
         for t in self.tags:
             if t.value == tag:
@@ -78,6 +78,12 @@ class Note:
             self.content.value = new_content
         else:
             raise ValueError("Content length should not exceed 20000 characters.")
+
+    def add_content(self, content):
+        self.content = Content(content).value
+
+    def delete_content(self):
+        self.content = ""
 
     # === TITLE ===
     def edit_title(self, new_title: str):
