@@ -1,5 +1,5 @@
 from fuzzywuzzy import process
-from services import contacts
+from services import contacts, notes
 from helpers.helpers import parse_input
 from helpers.commands import commands_list
 from services.shared import show_help, close, hello, goodbye, greeting
@@ -70,8 +70,14 @@ def execute_command(cmd: str, args: list):
         contacts.edit_contact()
     elif cmd == "expand contact":
         contacts.expand_contact()
-    elif cmd == "delete contact":
-        contacts.delete_contact()
+    elif cmd == "add note":
+        notes.add()
+    elif cmd == "find note":
+        notes.find()
+    elif cmd == "change note":
+        notes.change()
+    elif cmd == "delete note":
+        notes.delete()
 def main():
     '''
         Main function for the assistant bot

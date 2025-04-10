@@ -7,8 +7,6 @@ from models.note import Note
 from helpers.helpers import save_notes
 
 
-notes_book = NotesBook()
-
 
 def parse_tags(tags_input: str) -> list:
     if not tags_input:
@@ -21,38 +19,50 @@ def add():
     title = input("Enter a title: ")
     content = input("Enter note content: ")
     tags_input = input("Enter tag(s) separated by commas: ")
-    tags = [tag.strip() for tag in tags_input.split(",")] if tags_input else []
-
     tags = parse_tags(tags_input)
 
-    note = Note(title, content, tags)
-    notes_book.add_note(note)
+    note = Note(title)
+    note.add_content(content)
+   
+    for tag in tags:
+        note.add_tag(tag)
+
+    notes.add_note(note)
+
     print("Note added successfully!")
 
 
 @input_error
 def find():
-    key_word = input("Enter keyword to search: ")
-    results = find(key_word)
+    key_word = input("Enter title to search: ")
+    results = notes.find_note(key_word)
 
     if not results:
         print("No notes found.")
     else:
-        for note in results:
-            print(note)
+        title, content, tags = results.get_display_data()
+        print(f"Title: {title}")
+        print(f"Content: {content}")
+        print("Tags: " + (", ".join(tags) if tags else "None"))
+
 
 
 @input_error
 def change():
     title = input("Enter the title of the note to change: ")
+    note_for_changing = notes.find_note(title)
+    if not note_for_changing:
+        print("Note not found.")
+        return
+
     new_content = input("Enter new content: ")
+    note_for_changing.edit_content(new_content)
+    print("Note content updated.")
 
 
 @input_error
 def delete():
     title = input("Enter the title of the note to delete: ")
-
-    if title in notes_book:
-        notes_book.delete(title)
-
+    notes.delete_note(title)
     print("Note deleted.")
+
