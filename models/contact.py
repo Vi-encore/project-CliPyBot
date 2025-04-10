@@ -81,8 +81,8 @@ class Record:
     def change_phone(self, phone: str, new_phone: str):
         for p in self.phones:
             if p.value == phone:
-                #p.value = Phone(new_phone).value
-                p.value = new_phone
+                p.value = Phone(new_phone).value
+                #p.value = new_phone
                 return
         raise ValueError(f"Phone number {phone} is not found")
 
