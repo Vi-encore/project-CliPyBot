@@ -17,10 +17,10 @@ all_available_commands = [
     'all birthdays',
     'export contacts',
     'edit contact',
-    'expand contact'
-    'add note'
-    'find note'
-    'change note'
+    'expand contact',
+    'add note',
+    'find note',
+    'change note',
     'delete note'
 ]
 
