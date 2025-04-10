@@ -75,7 +75,7 @@ class Note:
     # === CONTENT ===
     def edit_content(self, new_content: str):
         if len(new_content) <= 20000:
-            self.content.value = new_content
+            self.content = new_content
         else:
             raise ValueError("Content length should not exceed 20000 characters.")
 
