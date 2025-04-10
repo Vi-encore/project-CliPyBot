@@ -14,14 +14,15 @@ all_available_commands = [
     #'add birthday',
     "show birthday",
     # 'update birthday',
-    'all birthdays',
-    'export contacts',
-    'edit contact',
-    'expand contact',
-    'add note',
-    'find note',
-    'change note',
-    'delete note'
+    "all birthdays",
+    "export contacts",
+    "edit contact",
+    "expand contact",
+    "show notes",
+    "add note",
+    "find note",
+    "change note",
+    "delete note",
 ]
 
 
