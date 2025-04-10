@@ -88,7 +88,7 @@ class Note:
     # === TITLE ===
     def edit_title(self, new_title: str):
         if len(new_title) <= 1000:
-            self.title.value = new_title
+            self.title = new_title
         else:
             raise ValueError("Title length should not exceed 1000 characters.")
 

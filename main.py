@@ -6,6 +6,7 @@ from services.shared import show_help, close, hello, goodbye, greeting
 from helpers.typing_effect import typing_input, typing_output
 from rich.console import Console
 
+
 # Initialize Console for rich output
 console = Console()
 
@@ -73,13 +74,14 @@ def execute_command(cmd: str, args: list):
         contacts.edit_contact()
     elif cmd == "expand contact":
         contacts.expand_contact()
-        #####################TESTING##################
-    elif cmd == "create note":
+    elif cmd == "add note":
         notes.add()
-    elif cmd == "show notes":
-        notes.all()
-
-
+    elif cmd == "find note":
+        notes.find()
+    elif cmd == "change note":
+        notes.change()
+    elif cmd == "delete note":
+        notes.delete()
 def main():
     """
     Main function for the assistant bot
