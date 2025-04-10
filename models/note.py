@@ -88,20 +88,20 @@ class Note:
     # === TITLE ===
     def edit_title(self, new_title: str):
         if len(new_title) <= 1000:
-            self.title.value = new_title
+            self.title = new_title
         else:
             raise ValueError("Title length should not exceed 1000 characters.")
 
     def __str__(self):
-        title = self.title.value if self.title else "None"
-        content = self.content.value if self.content else "None"
+        title = self.title if self.title else "None"
+        content = self.content if self.content else "None"
         tags = "; ".join(tag.value for tag in self.tags) if self.tags else "None"
         return f"Title: {title}, Content: {content}, Tags: {tags}"
 
     def get_display_data(self):
         """Returns title, content, and tags (as strings)"""
-        title = self.title.value if self.title else "None"
-        content = self.content.value if self.content else "None"
+        title = self.title.value
+        content = self.content
         tags = [tag.value for tag in self.tags]
         return title, content, tags
 
