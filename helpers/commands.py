@@ -6,25 +6,32 @@ all_available_commands = [
     'all contacts',
     #'add phone',
     #'change phone',
-    'show phone',
-    'delete phone',
+    "show phone",
+    "delete phone",
     #'add email',
     #'change email',
-    'show email',
-    'delete email',
+    "show email",
+    "delete email",
     #'add birthday',
-    'show birthday',
+    "show birthday",
     # 'update birthday',
-    'all birthdays',
-    'export contacts',
-    'edit contact',
-    'expand contact',
-    'add note',
-    'find note',
-    'change note',
-    'delete note'
+    "all birthdays",
+    "export contacts",
+    "edit contact",
+    "expand contact",
+    #########NOTES#################
+    "show notes", #done
+    "add note", #done 
+    "find note",
+    "change note", #done
+    "delete note", #done
+    "export notes",
+    "find note"
 ]
+
 
 def commands():
     return all_available_commands
+
+
 commands_list = commands()
