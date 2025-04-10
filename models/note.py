@@ -43,7 +43,7 @@ class Tag(Field):  # add strip
 class Note:
     def __init__(self, title):
         self.title = Title(title)
-        self.content = ""
+        self.content = None
         self.tags = []
 
     # === TAGS ===
@@ -65,6 +65,12 @@ class Note:
                 self.tags[i] = Tag(new_tag)
                 return
         raise ValueError(f"Tag '{old_tag}' not found.")
+    
+    def find_tag(self, tag):
+        for t in self.tags:
+            if t.value == tag:
+                return t
+        return None
 
     # === CONTENT ===
     def edit_content(self, new_content: str):
