@@ -7,9 +7,8 @@ from models.note import Note
 from helpers.helpers import save_notes
 
 
-
-
 notes_book = NotesBook()
+
 
 def parse_tags(tags_input: str) -> list:
     if not tags_input:
@@ -49,13 +48,11 @@ def change():
     new_content = input("Enter new content: ")
 
 
-
 @input_error
 def delete():
     title = input("Enter the title of the note to delete: ")
 
     if title in notes_book:
         notes_book.delete(title)
-        
-    print("Note deleted.")
 
+    print("Note deleted.")

@@ -41,9 +41,9 @@ class Tag(Field):  # add strip
 
 
 class Note:
-    def __init__(self, title=None):
+    def __init__(self, title):
         self.title = Title(title)
-        self.content = ''
+        self.content = None
         self.tags = []
 
     # === TAGS ===
@@ -66,12 +66,24 @@ class Note:
                 return
         raise ValueError(f"Tag '{old_tag}' not found.")
 
+    def find_tag(self, tag):
+        for t in self.tags:
+            if t.value == tag:
+                return t
+        return None
+
     # === CONTENT ===
     def edit_content(self, new_content: str):
         if len(new_content) <= 20000:
             self.content.value = new_content
         else:
             raise ValueError("Content length should not exceed 20000 characters.")
+
+    def add_content(self, content):
+        self.content = Content(content).value
+
+    def delete_content(self):
+        self.content = ""
 
     # === TITLE ===
     def edit_title(self, new_title: str):
@@ -123,10 +135,9 @@ class NotesBook:
         # check if title still in data
         if title in self.data:
             del self.data[title]
-            return f"Note {title} has been deleted"
+            # return f"Note {title} has been deleted"
         else:
-            raise ValueError(f'Record {title} is not found')
-
+            raise ValueError(f"Record {title} is not found")
 
 
 # Create a NotesBook and add a sample Note
@@ -170,14 +181,20 @@ notes_book = NotesBook()
 note1 = Note(title="Shopping List")
 
 # Add the note to NotesBook
-print(notes_book.add_note(note1))  # Output: Note with title 'Shopping List' has been added.
+print(
+    notes_book.add_note(note1)
+)  # Output: Note with title 'Shopping List' has been added.
 
 # Find the note by title
 retrieved_note = notes_book.find_note("Shopping List")
-print(retrieved_note)  # Output: Title: Shopping List, Content: Eggs, Milk, Bread, Tags: None
+print(
+    retrieved_note
+)  # Output: Title: Shopping List, Content: Eggs, Milk, Bread, Tags: None
 
 # Delete the note
-print(notes_book.delete_note("Shopping List"))  # Output: Note Shopping List has been deleted.
+print(
+    notes_book.delete_note("Shopping List")
+)  # Output: Note Shopping List has been deleted.
 
 # Verify the note is deleted
 print(notes_book.find_note("Shopping List"))  # Output: None
