@@ -13,7 +13,6 @@ class Field:
     def __str__(self):
         return str(self.value)
 
-
 # Name
 class Name(Field):
     def __init__(self, name: str):
@@ -48,7 +47,6 @@ class Email(Field):
         if not re.match(email_regex, email):
             raise ValueError(f"Invalid email format: {email}")
 
-
 # Birthday
 class Birthday(Field):
     def __init__(self, value: str):
@@ -60,7 +58,6 @@ class Birthday(Field):
             dtdt.strptime(value, "%d.%m.%Y")
         except ValueError:
             raise ValueError("Invalid date format. Use DD.MM.YYYY")
-
 
 # Record
 class Record:
@@ -142,10 +139,21 @@ class AddressBook:
         self.data[record.name.value] = record
 
     @exception_handler
-    def find(self, name: str):
-        if name in self.data:
-            return self.data[name]
-        return None
+    def find(self, query: str, by_name=False, by_phone=False, by_email=False, by_birthday=False) -> list:
+        query = query.strip().lower()
+        results = []
+
+        for key, record in self.data.items():
+            if by_name and query in key.strip().lower():
+                results.append(record)
+            elif by_phone and any(query in phone.value.lower() for phone in record.phones):
+                results.append(record)
+            elif by_email and any(query in email.value.lower() for email in record.emails):
+                results.append(record)
+            elif by_birthday and record.birthday and query in record.birthday.value.lower():
+                results.append(record)
+
+        return results
 
     @exception_handler
     def delete(self, name: str):

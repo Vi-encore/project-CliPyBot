@@ -10,6 +10,7 @@ from helpers.create_table import (
     show_contact_in_table,
     show_all_contacts_table,
     show_birthdays_table,
+    show_options_for_query,
 )
 from helpers.typing_effect import typing_output, typing_input
 from data.state import book
@@ -97,19 +98,121 @@ def add():
 
 
 # FIND CONTACT
+@input_error
+def find():
+    print('')
+    show_options_for_query()
+    print('')
+    
+    # Loop for query
+    while True:
+        query = typing_input("How do you want to search (Enter the number of field): (num) ").strip().lower()
+        
+        if not query:
+            typing_output("No input provided❗", color="yellow")
+            typing_output("You can enter any other command")
+            return 1
+        
+        if query not in ["1", "2", "3", "4"]:
+            typing_output("Invalid option. Please enter a number between 1 and 4. ❗", color="yellow")
+            continue
+        break
+    
+    # Get args based on query
+    if query == "1": # search by name
+        args = typing_input("Enter the name of the contact: (str): ").strip().split() 
+    elif query == "2":
+        args = typing_input("Enter the phone number: (num): ").strip().split()
+    elif query == "3":
+        args = typing_input("Enter the email address: (str): ").strip().split()
+    elif query == "4":
+        args = typing_input("Enter the birthday (dd.mm.yyyy): (str): ").strip().split()
+    else:
+        typing_output("Invalid option. Please enter a number between 1 and 4. ❗", color="yellow")
+        return 1
+    if not args:
+        typing_output("No input provided. Please enter a valid query. ❗", color="yellow")
+        return 1
+    
+    # Call the find method with the appropriate arguments
+    if query == "1": # search by name
+        result = book.find(" ".join(args), by_name=True)
+    elif query == "2": # search by phone
+        result = book.find(" ".join(args), by_phone=True)
+    elif query == "3": # search by email
+        result = book.find(" ".join(args), by_email=True)
+    elif query == "4": # search by birthday
+        result = book.find(" ".join(args), by_birthday=True)
+    else:
+        typing_output("Invalid option. Please enter a number between 1 and 4. ❗", color="yellow")
+        return 1
+    
+    if not result:
+        typing_output("No record found. ❗", color="yellow")
+        return 1
+    # If a record is found, show the contact details
+    
+    print('')
+    typing_output("Contact found:")
+    show_all_contacts_table(result) # show contacts details in table
+    print('')
+    return 0
+
+# EDIT CONTACT
 @check_arguments(1)
 @input_error
-def find(*args: tuple):
-    name = " ".join(args)
-    record = book.find(name)
+def edit_contact(): #one func for user experience (edit email, numbers etc)
+    all()
+    name = typing_input("For whom do you want to change info? (name)")
+    what_change = typing_input("What info do you want to change? (email, phone)")
+    if what_change == "email":
+        # contact = find(name)
+        # print(book.find(name).emails)
+        emails_to_change = [email.value for email in book.find(name).emails]
+        action = input(
+            "Do you want to edit all tags or specific ones? (all/specific): "
+        ).lower()
+        if action == "specific":
+            for index, email in enumerate(emails_to_change, 1):
+                print(f"{index}. {email}")
+                email_indices = input(
+                    "Enter the number of email you want to edit:"
+                ).strip()
+                if not email_indices:  # Check if the input is empty
+                    print("You did not enter any value.")
+                    try_again = input("Would you like to try again? (y/n): ").lower()
+                    if try_again != "y":
+                        print("Tags have not been changed.")
+                        return
+                else:
 
-    if not record:
-        no_record_message(name)
-        return 1
-
-    typing_output("Contact found:")
-    show_contact(record)  # show contact details in table
-    return 0
+                    email_indices = [
+                        int(index) - 1
+                        for index in email_indices.split(",")
+                        if index.isdigit()
+                    ]  # Convert to zero-based indices
+                    for i in email_indices:
+                        if 0 <= i < len(emails_to_change):  # Ensure valid index
+                            while True:
+                                new_email = input(
+                                    f"Enter new value for email '{emails_to_change[i]}': "
+                                ).strip()
+                                if not new_email:  # Check if input for new tag is empty
+                                    print("You did not enter any value.")
+                                    try_again = input(
+                                        "Would you like to try again? (y/n): "
+                                    ).lower()
+                                    if try_again != "y":
+                                        print(
+                                            f"No changes were made to the email '{emails_to_change[i]}'."
+                                        )
+                                        break
+                                else:
+                                    change_email(
+                                        name, email, new_email
+                                    )  # Update the email
+                                    break
+                        break
 
 
 # REMOVE CONTACT
@@ -395,25 +498,26 @@ def all_birthdays(*args):
     try:
         days = int(args[0]) if args else 7
     except ValueError:
-        print("Please enter a valid number of days.")
+        console.print("Please enter a valid number of days.", style="yellow")
         return
+    
     birthdays = book.get_birthday_in_days(days)
     today = dt.date.today()
     day_word = "day" if days == 1 else "days"
 
     if not birthdays:
-        print(f"No upcoming birthdays in the next {days} {day_word}")
+        console.print(f"No upcoming birthdays in the next {days} {day_word}", style="yellow")
+        return 1
     else:
-        print(f"Birthdays in the next {days} {day_word}:")
-        for birthday in birthdays:
-            birthday_date = dtdt.strptime(birthday['birthday'], "%d.%m.%Y").date()
-            delta_days = (birthday_date - today).days
-            
-            word_day = "day" if delta_days == 1 else "days"
+        typing_output(f"Birthdays in the next {days} {day_word}: ")
+        
+        print("")
+        show_birthdays_table(birthdays)  # show birthdays in table
+        print("")
+        
+    return 0
 
-            print(f"{birthday['name']} has birthday on {birthday['birthday']} in {delta_days} {word_day}.")
-
-    
+# UPDATE BIRTHDAY  
 @check_arguments(2)
 @input_error
 def update_birthday(*args: tuple):
@@ -497,8 +601,6 @@ def export_contacts_to_csv():
 
     except (OSError, IOError) as e:
         console.print(f"Error writing to file: {e} 🚨 ", style="red")
-
-
 def edit_contact(): #one func for user experience (edit email, numbers etc)
     all()
     name = input("For whom do you want to change info? (name): ").title()

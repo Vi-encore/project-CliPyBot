@@ -1,6 +1,7 @@
 from rich.console import Console
 from rich.table import Table
 from rich import box
+from datetime import datetime as dtdt
 
 # Initialize Console for rich output
 console = Console()
@@ -14,7 +15,7 @@ def show_contact_in_table(record):
         show_header=True,               # Show header
         header_style="bold green",      # Customize header style
         box=box.ROUNDED,                # Customize table shape
-        title=f"{name} 👨🏻‍💻",             # Title for the table
+        title=f"{name} 👨",             # Title for the table
         title_justify="center",         # Center the title
         title_style="bold dark_green", # Title style
         )
@@ -78,10 +79,43 @@ def show_birthdays_table(birthdays):
     )
     table.add_column("Upcoming Birthdays", style="bold white on green", width=20)
     table.add_column("Birthday", justify="left", width=20)
+    table.add_column("Days to birthday", justify="left", width=20)
 
+    today = dtdt.today().date()
+    
     for record in birthdays:
+        birthday_date = dtdt.strptime(record['birthday'], "%d.%m.%Y").date()
+        delta_days = (birthday_date - today).days
         
-        table.add_row(record['name'], record['congratulation_date'] or "-")
+        word_day = "day" if delta_days == 1 else "days"
+
+        # print(f"{record['name']} has birthday on {record['birthday']} in {delta_days} {word_day}.")
+        
+        table.add_row(record['name'], birthday_date.strftime("%d.%m.%Y"), f'{delta_days} {word_day}')
         table.add_section()  # Adds a separating line between contacts
+
+    console.print(table)
+    
+# SHOW QUERY OPTIONS
+def show_options_for_query():
+    """ Display query options in a styled table """
+    table = Table(
+        show_header=True,
+        header_style="bold green",
+        box=box.ROUNDED,
+        title="Query Options 🔍",
+        title_justify="center",
+        title_style="bold dark_green",
+    )
+    table.add_column("Option", style="bold white on green", width=20)
+    table.add_column("Description", justify="left")
+
+    table.add_row("1", "Search by [bold cyan]name[/]")
+    table.add_section()  # Adds a separating line between contacts
+    table.add_row("2", "Search by [bold cyan]phone number[/]")
+    table.add_section()  # Adds a separating line between contacts
+    table.add_row("3", "Search by [bold cyan]email[/] address")
+    table.add_section()  # Adds a separating line between contacts
+    table.add_row("4", "Search by [bold cyan]birthday[/]")
 
     console.print(table)

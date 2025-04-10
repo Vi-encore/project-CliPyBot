@@ -5,7 +5,6 @@ from helpers.commands import commands_list
 from services.shared import show_help, close, hello, goodbye, greeting
 from helpers.typing_effect import typing_input, typing_output
 from rich.console import Console
-from helpers.matrix_effect import matrix_drop
 
 # Initialize Console for rich output
 console = Console()
@@ -101,9 +100,11 @@ def main():
         elif cmd == 'goodbye': # to close presentation
             goodbye()
             break
+
         # Contact commands 
         elif cmd in commands_list:
             execute_command(cmd, args)
+
         # Notes commands
         # logic for notes
         else:
