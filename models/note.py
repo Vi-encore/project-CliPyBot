@@ -94,9 +94,9 @@ class Note:
         return title, content, tags
 
 
-class NotesBook(UserDict):
+class NotesBook:
     def __init__(self):
-        super().__init__()
+        self.data{}
 
     def __str__(self):
         return "\n".join(str(note) for note in self.data.values())
@@ -114,16 +114,19 @@ class NotesBook(UserDict):
 
     # @input_error  # will trigger ModuleNotFound error if run from here ???
     def find_note(self, title):
-        return self.data.get(title, None)
+        if title in self.data:
+            return self.data[title]
+        return None
 
     # @input_error  # will trigger ModuleNotFound error if run from here ???
     def delete_note(self, title):
         # check if title still in data
         if title in self.data:
-            self.data.pop(title)
+            del self.data[title]
             return f"Note {title} has been deleted"
         else:
-            return "There is no note with that title"
+            raise ValueError(f'Record {title} is not found')
+
 
 
 # Create a NotesBook and add a sample Note
