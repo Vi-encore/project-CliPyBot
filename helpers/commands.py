@@ -18,6 +18,10 @@ all_available_commands = [
     'export contacts',
     'edit contact',
     'expand contact'
+    'add note'
+    'find note'
+    'change note'
+    'delete note'
 ]
 
 def commands():
