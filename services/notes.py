@@ -54,7 +54,7 @@ def add():
         typing_output("Note already exists.")
         typing_output("Updating details...")
 
-    # Loop for phone
+    # Loop for content
     while True:
         content = typing_input("Enter a content for a note (press Enter to skip): (str) ").strip()
         if not content:
@@ -66,7 +66,7 @@ def add():
             console.print("Invalid content.❗ ", style="red")
             typing_output("Please try again. ", color="yellow")
 
-    # Loop for email
+    # Loop for tags
     while True:
         tag = typing_input("Note tag (press Enter to skip): (str): ").strip()
         if not tag:
