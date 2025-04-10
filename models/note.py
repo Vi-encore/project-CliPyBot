@@ -93,15 +93,15 @@ class Note:
             raise ValueError("Title length should not exceed 1000 characters.")
 
     def __str__(self):
-        title = self.title.value if self.title else "None"
-        content = self.content.value if self.content else "None"
+        title = self.title if self.title else "None"
+        content = self.content if self.content else "None"
         tags = "; ".join(tag.value for tag in self.tags) if self.tags else "None"
         return f"Title: {title}, Content: {content}, Tags: {tags}"
 
     def get_display_data(self):
         """Returns title, content, and tags (as strings)"""
-        title = self.title.value if self.title else "None"
-        content = self.content.value if self.content else "None"
+        title = self.title.value
+        content = self.content
         tags = [tag.value for tag in self.tags]
         return title, content, tags
 
@@ -138,6 +138,9 @@ class NotesBook:
             # return f"Note {title} has been deleted"
         else:
             raise ValueError(f"Record {title} is not found")
+
+    def __str__(self):
+        return "\n".join(str(note) for note in self.data)
 
 
 # Create a NotesBook and add a sample Note
