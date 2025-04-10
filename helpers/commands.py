@@ -1,4 +1,5 @@
 all_available_commands = [
+    'delete contact',
     'add contact',
     'find contact',
     'remove contact',
