@@ -41,7 +41,7 @@ class Tag(Field):  # add strip
 
 
 class Note:
-    def __init__(self, title=None):
+    def __init__(self, title):
         self.title = Title(title)
         self.content = ""
         self.tags = []
