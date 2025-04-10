@@ -501,12 +501,18 @@ def export_contacts_to_csv():
 
 def edit_contact(): #one func for user experience (edit email, numbers etc)
     all()
-    name = input("For whom do you want to change info? (name): ")
+    name = input("For whom do you want to change info? (name): ").title()
+    if not book.find(name):
+        print(f"Contact {name} not found.")
+        return
     what_change = input("What info do you want to change? (email, phone, birthday): ")
     if what_change == "email":
         # contact = find(name)
         # print(book.find(name).emails)
         emails_to_change = [email.value for email in book.find(name).emails]
+        if not len(book.find(name).emails):
+            print('No email to edit for that contact.')
+            return
         while True:
             for index, email in enumerate(emails_to_change, 1):
                 print(f"{index}. {email}")
@@ -547,6 +553,7 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
                                 )  # Update the email
                                 break
                 break
+    #TODO phone bug (changes second phone if 2 phones in the list)
     elif what_change == "phone":
         phones_to_change = [phone.value for phone in book.find(name).phones]
         #print(phones_to_change, 'test')
@@ -556,6 +563,7 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
             phone_indices = input(
                 "Enter the number of phone you want to edit:"
             ).strip()
+            print(phone_indices, "PHONE INDICES")
             if not phone_indices:
                 print("You did not enter any value.")
                 try_again = input('Would you like to try again? (y/n): ').lower()
@@ -568,6 +576,7 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
                     for index in phone_indices.split(",")
                     if index.isdigit()
                 ]
+                print(phone_indices, "PHONE INDICES")
                 for i in phone_indices:
                     if 0 <= i < len(phones_to_change):
                         while True:
@@ -604,7 +613,10 @@ def edit_contact(): #one func for user experience (edit email, numbers etc)
 
 def expand_contact(): #one func for better UX (expand user phones, emails, add birthday if doesn't exist)
     all()
-    name = input("What contact you want to expand?: ")
+    name = input("What contact you want to expand?: ").title()
+    if not book.find(name):
+        print(f"Contact {name} not found.")
+        return
     what_add = input("Which parameter you want to expand? (phone, email, birthday): ")
     if what_add == "phone":
         existing_phones_list = [phone.value for phone in book.find(name).phones]
