@@ -127,6 +127,8 @@ def show_options_for_query():
     table.add_row("3", "Search by [bold cyan]email[/] address")
     table.add_section()  # Adds a separating line between contacts
     table.add_row("4", "Search by [bold cyan]birthday[/]")
+    table.add_section()
+    table.add_row("5", "Search by [bold cyan]address[/]")
 
     console.print(table)
 

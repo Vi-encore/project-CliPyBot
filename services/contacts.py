@@ -131,9 +131,9 @@ def find():
             typing_output("You can enter any other command")
             return 1
 
-        if query not in ["1", "2", "3", "4"]:
+        if query not in ["1", "2", "3", "4", "5"]:
             typing_output(
-                "Invalid option. Please enter a number between 1 and 4. ❗",
+                "Invalid option. Please enter a number between 1 and 5. ❗",
                 color="yellow",
             )
             continue
@@ -148,9 +148,11 @@ def find():
         args = typing_input("Enter the email address: (str): ").strip().split()
     elif query == "4":
         args = typing_input("Enter the birthday (dd.mm.yyyy): (str): ").strip().split()
+    elif query == "5":
+        args = typing_input("Enter the address: (str): ").strip().split()
     else:
         typing_output(
-            "Invalid option. Please enter a number between 1 and 4. ❗", color="yellow"
+            "Invalid option. Please enter a number between 1 and 5. ❗", color="yellow"
         )
         return 1
     if not args:
@@ -168,9 +170,11 @@ def find():
         result = book.find(" ".join(args), by_email=True)
     elif query == "4":  # search by birthday
         result = book.find(" ".join(args), by_birthday=True)
+    elif query == "5":
+        result = book.find(" ".join(args), by_address=True)
     else:
         typing_output(
-            "Invalid option. Please enter a number between 1 and 4. ❗", color="yellow"
+            "Invalid option. Please enter a number between 1 and 5. ❗", color="yellow"
         )
         return 1
 
