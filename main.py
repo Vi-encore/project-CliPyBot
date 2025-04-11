@@ -21,10 +21,12 @@ def suggest_and_execute_command(cmd: str, args: list, func):
         suggested_cmd = match[0]
 
         # Ask user if they want to execute the suggested command
-        console.print(f'Did you mean "[blue]{suggested_cmd}[/]"?', style='yellow italic')
+        console.print(
+            f'Did you mean "[blue]{suggested_cmd}[/]"?', style="yellow italic"
+        )
         response = typing_input(f'Run "{suggested_cmd}" instead? (y/n): ')
 
-        if response.lower() in ('y', 'yes'):
+        if response.lower() in ("y", "yes"):
             # Execute the suggested command
             func(suggested_cmd, args)
             return True
@@ -64,69 +66,79 @@ def execute_command(cmd: str, args: list):
         contacts.update_birthday(*args)
     elif cmd == "all birthdays":
         contacts.all_birthdays()
-    elif cmd == 'export contacts':
+    elif cmd == "export contacts":
         contacts.export_contacts_to_csv()
     elif cmd == "edit contact":  # (name, days_to_upcoming)
         contacts.edit_contact()
     elif cmd == "expand contact":
         contacts.expand_contact()
+        #####################TESTING##################
     elif cmd == "delete contact":
         contacts.delete_contact()
     elif cmd == "add note":
         notes.add()
-    elif cmd == "find note":
-        notes.find()
+    elif cmd == "show notes":
+        notes.all()
     elif cmd == "change note":
-        notes.change()
+        notes.change_note()
     elif cmd == "delete note":
-        notes.delete()
+        notes.delete_note(),
+    elif cmd == "find note":
+        notes.find(),
+    elif cmd == "export notes":
+        notes.export_notes_to_csv(),
+
+
 def main():
-    '''
-        Main function for the assistant bot
-        that works with contacts and notes.
-    '''
+    """
+    Main function for the assistant bot
+    that works with contacts and notes.
+    """
     greeting()
 
     while True:
-        user_input = typing_input('Enter a command </>: ')
-        if user_input.strip() == '':
-            console.print('No command entered ⚠️', style='red bold')
-            typing_output('Please enter a command. ', color='yellow', s_style='italic')
-            print('')
+        user_input = typing_input("Enter a command </>: ")
+        if user_input.strip() == "":
+            console.print("No command entered ⚠️", style="red bold")
+            typing_output("Please enter a command. ", color="yellow", s_style="italic")
+            print("")
             continue
 
         cmd, *args = parse_input(user_input)
-        
-        if cmd == '':
-            console.print('Please enter a command.', style='yellow italic')
+
+        if cmd == "":
+            console.print("Please enter a command.", style="yellow italic")
             continue
         elif cmd in ["close", "exit", "quit"]:
             close()
             break
-        elif cmd == 'hello':
+        elif cmd == "hello":
             hello()
-        elif cmd == 'help':
-            show_help() 
-        elif cmd == 'goodbye': # to close presentation
+        elif cmd == "help":
+            show_help()
+        elif cmd == "goodbye":  # to close presentation
             goodbye()
             break
 
-        # Contact commands 
+        # Contact commands
         elif cmd in commands_list:
             execute_command(cmd, args)
 
         # Notes commands
         # logic for notes
         else:
-            print('')
-            console.print('Unknown command ⚠️', style='red bold')
-            #console.print('To get info about available commands, please type [blue]"help"[/] ', style='yellow italic')
-            print('')
+            print("")
+            console.print("Unknown command ⚠️", style="red bold")
+            # console.print('To get info about available commands, please type [blue]"help"[/] ', style='yellow italic')
+            print("")
             if not suggest_and_execute_command(cmd, args, execute_command):
                 # If no suggestion was executed, show the help message
-                console.print('To get info about available commands, please type [blue]"help"[/] ',
-                              style='yellow italic')
-            print('')
-         
-if __name__ == '__main__':
+                console.print(
+                    'To get info about available commands, please type [blue]"help"[/] ',
+                    style="yellow italic",
+                )
+            print("")
+
+
+if __name__ == "__main__":
     main()
