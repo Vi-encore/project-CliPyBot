@@ -384,3 +384,72 @@ def export_notes_to_csv() -> None:
 
 
 # what to do here code in Bolma
+def find():
+    print("")
+    show_options_for_query_notes()
+    print("")
+
+    # Loop for query
+    while True:
+        query = (
+            typing_input(
+                "How do you want to search (Enter the number of field): (num) "
+            )
+            .strip()
+            .lower()
+        )
+
+        if not query:
+            typing_output("No input provided❗", color="yellow")
+            typing_output("You can enter any other command")
+            return 1
+
+        if query not in ["1", "2", "3"]:
+            typing_output(
+                "Invalid option. Please enter a number between 1 and 3. ❗",
+                color="yellow",
+            )
+            continue
+        break
+
+    # Get args based on query
+    if query == "1":  # search by name
+        args = typing_input("Enter a title of the note: (str): ").strip().split()
+    elif query == "2":
+        args = typing_input("Enter a content: (str): ").strip().split()
+    elif query == "3":
+        args = typing_input("Enter a tag: (str): ").strip().split()
+    else:
+        typing_output(
+            "Invalid option. Please enter a number between 1 and 3. ❗", color="yellow"
+        )
+        return 1
+    if not args:
+        typing_output(
+            "No input provided. Please enter a valid query. ❗", color="yellow"
+        )
+        return 1
+
+    # Call the find method with the appropriate arguments
+    if query == "1":  # search by name
+        result = notes.search(" ".join(args), by_title=True)
+    elif query == "2":  # search by phone
+        result = notes.search(" ".join(args), by_content=True)
+    elif query == "3":  # search by email
+        result = notes.search(" ".join(args), by_tag=True)
+    else:
+        typing_output(
+            "Invalid option. Please enter a number between 1 and 3. ❗", color="yellow"
+        )
+        return 1
+
+    if not result:
+        typing_output("No record found. ❗", color="yellow")
+        return 1
+    # If a record is found, show the contact details
+
+    print("")
+    typing_output("Contact found:")
+    show_all_notes_table(result)  # show contacts details in table
+    print("")
+    return 0
