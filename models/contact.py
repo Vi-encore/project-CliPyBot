@@ -59,6 +59,10 @@ class Birthday(Field):
         except ValueError:
             raise ValueError("Invalid date format. Use DD.MM.YYYY")
 
+class Address(Field):
+    def __init__(self, address: str):
+        super().__init__(address)
+
 # Record
 class Record:
     def __init__(self, name: str):
@@ -66,6 +70,7 @@ class Record:
         self.phones = []
         self.emails = []
         self.birthday = None
+        self.address = None
 
     # === PHONE ===
     def add_phone(self, phone: str):
@@ -116,11 +121,20 @@ class Record:
     def add_birthday(self, birthday: str):
         self.birthday = Birthday(birthday)
 
+    # === ADDRESS ===
+    def add_address(self, address: str):
+        self.address = Address(address)
+
+    @exception_handler
+    def delete_address(self, name: str):
+        self.address = None
+
     def __str__(self):
         phone_str = "; ".join(p.value for p in self.phones)
         email_str = "; ".join(e.value for e in self.emails) if self.emails else ""
         birthday_str = f" birthday: {self.birthday.value}" if self.birthday else ""
-        return f"Contact name: {self.name.value}, phones: {phone_str}, emails: {email_str},{birthday_str}"
+        address_str = f" address: {self.address.value}" if self.address else ""
+        return f"Contact name: {self.name.value}, phones: {phone_str}, emails: {email_str},{birthday_str}, address: {address_str}"
 
     def get_display_data(self):
         """Returns name, list of phones, list of emails, and birthday (as str or None)"""
@@ -128,7 +142,8 @@ class Record:
         phones = [phone.value for phone in self.phones]
         emails = [email.value for email in self.emails]
         birthday = self.birthday.value if self.birthday else None
-        return name, phones, emails, birthday
+        address = self.address.value if self.address else None
+        return name, phones, emails, birthday, address
     
 # AddressBook
 class AddressBook:

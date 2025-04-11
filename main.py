@@ -35,13 +35,12 @@ def suggest_and_execute_command(cmd: str, args: list, func):
 
     return False
 
-
 def execute_command(cmd: str, args: list):
-    if cmd == "add contact":
+    if cmd == 'add contact':
         contacts.add()
-    elif cmd == "find contact":
+    elif cmd == 'find contact':
         contacts.find(*args)
-    elif cmd == "remove contact":
+    elif cmd == 'remove contact':
         contacts.remove(*args)
     elif cmd == "all contacts":
         contacts.all()
@@ -76,6 +75,8 @@ def execute_command(cmd: str, args: list):
     elif cmd == "expand contact":
         contacts.expand_contact()
         #####################TESTING##################
+    elif cmd == "delete contact":
+        contacts.delete_contact()
     elif cmd == "add note":
         notes.add()
     elif cmd == "show notes":
