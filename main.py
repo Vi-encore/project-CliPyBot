@@ -1,3 +1,5 @@
+
+
 from fuzzywuzzy import process
 from services import contacts, notes
 from helpers.helpers import parse_input
@@ -34,43 +36,29 @@ def suggest_and_execute_command(cmd: str, args: list, func):
     return False
 
 def execute_command(cmd: str, args: list):
-    if cmd == 'add contact':
+    if cmd == 'add contact': #done
         contacts.add()
-    elif cmd == 'find contact':
+    elif cmd == 'find contact': #done
         contacts.find(*args)
-    elif cmd == 'remove contact':
+    elif cmd == 'remove contact': #?????????
         contacts.remove(*args)
-    elif cmd == "all contacts":
+    elif cmd == "all contacts": #done
         contacts.all()
-    elif cmd == "add phone":
-        contacts.add_phone(*args)
-    elif cmd == "change phone":
-        contacts.change_phone(*args)
-    elif cmd == "show phone":
+    elif cmd == "show phone": #????
         contacts.show_phone(*args)
-    elif cmd == "delete phone":
-        contacts.delete_phone(*args)
-    elif cmd == "add email":
-        contacts.add_email(*args)
-    elif cmd == "change email":
-        contacts.change_email(*args)
-    elif cmd == "show email":
+    elif cmd == "show email": #????
         contacts.show_email(*args)
     elif cmd == "delete email":
         contacts.delete_email(*args)
-    elif cmd == "add birthday":
-        contacts.add_birthday(*args)
-    elif cmd == "show birthday":
+    elif cmd == "show birthday": #????
         contacts.show_birthday(*args)
-    elif cmd == "update birthday":
-        contacts.update_birthday(*args)
-    elif cmd == "all birthdays":
+    elif cmd == "all birthdays": #done
         contacts.all_birthdays()
-    elif cmd == "export contacts":
+    elif cmd == "export contacts": #done
         contacts.export_contacts_to_csv()
-    elif cmd == "edit contact":  # (name, days_to_upcoming)
+    elif cmd == "edit contact":  # (name, days_to_upcoming) done
         contacts.edit_contact()
-    elif cmd == "expand contact":
+    elif cmd == "expand contact": #done
         contacts.expand_contact()
         #####################TESTING##################
     elif cmd == "delete contact":

@@ -185,9 +185,10 @@ def find():
     print("")
     return 0
 
+
 # REMOVE CONTACT
 @check_arguments(1)
-@input_error
+@input_error #???????
 def remove(*args: tuple):
     name = " ".join(args)
 
@@ -464,15 +465,16 @@ def show_birthday(*args: tuple):
 
 # SHOW ALL BIRTHDAYS
 @input_error
-def all_birthdays(*args):
+def all_birthdays():
     try:
-        days = int(args[0]) if args else 7
+        days = int(input("Enter a days number, in which to check? (int):"))
+        if not days:
+            days = 7
     except ValueError:
         console.print("Please enter a valid number of days.", style="yellow")
         return
 
     birthdays = book.get_birthday_in_days(days)
-    today = dt.date.today()
     day_word = "day" if days == 1 else "days"
 
     if not birthdays:
@@ -511,6 +513,7 @@ def update_birthday(*args: tuple):
     typing_output(f"New birthday 🍰: {record.birthday.value}")
     return 0
 
+
 # =================
 # === BIRTHDAY ===
 # =================
@@ -536,6 +539,7 @@ def add_address(*args: tuple):
     typing_output(f"Address updated for {name} ✅")
     typing_output(f"New address: {record.address.value}")
     return 0
+
 
 # UPDATE ADDRESS
 @check_arguments(2)
@@ -573,6 +577,8 @@ def delete_address(*args: tuple):
     save_contacts(book)
     typing_output(f'Email "{address}" for {name} deleted. ✅')
     return 0
+
+
 # ================
 # === EXPORT ===
 # ================
@@ -645,19 +651,23 @@ def edit_contact():
         typing_output(f"Contact {name} not found. ❗", color="yellow")
         return
 
-    what_change = input("What info do you want to change? (email, phone, birthday): ").lower()
+    what_change = input(
+        "What info do you want to change? (email, phone, birthday): "
+    ).lower()
 
     if what_change == "email":
         emails = [email.value for email in record.emails]
         if not emails:
-            typing_output('No email to edit for that contact. ❗', color="yellow")
+            typing_output("No email to edit for that contact. ❗", color="yellow")
             return
 
         for index, email in enumerate(emails, 1):
             typing_output(f"{index}. {email}")
 
         while True:
-            email_index = input("Enter the number of email you want to edit (or press Enter to cancel): ").strip()
+            email_index = input(
+                "Enter the number of email you want to edit (or press Enter to cancel): "
+            ).strip()
             if not email_index:
                 typing_output("Email edit cancelled.", color="yellow")
                 return
@@ -677,14 +687,16 @@ def edit_contact():
     elif what_change == "phone":
         phones = [phone.value for phone in record.phones]
         if not phones:
-            typing_output('No phone to edit for that contact. ❗', color="yellow")
+            typing_output("No phone to edit for that contact. ❗", color="yellow")
             return
 
         for index, phone in enumerate(phones, 1):
             typing_output(f"{index}. {phone}")
 
         while True:
-            phone_index = input("Enter the number of phone you want to edit (or press Enter to cancel): ").strip()
+            phone_index = input(
+                "Enter the number of phone you want to edit (or press Enter to cancel): "
+            ).strip()
             if not phone_index:
                 typing_output("Phone edit cancelled.", color="yellow")
                 return
@@ -704,10 +716,15 @@ def edit_contact():
     elif what_change == "birthday":
         birthday = record.birthday
         if not birthday:
-            typing_output("This contact doesn't have a birthday set. Use 'expand contact' instead.", color="yellow")
+            typing_output(
+                "This contact doesn't have a birthday set. Use 'expand contact' instead.",
+                color="yellow",
+            )
             return
 
-        new_birthday = input(f"Enter new birthday (current: '{birthday}') or press Enter to cancel: ").strip()
+        new_birthday = input(
+            f"Enter new birthday (current: '{birthday}') or press Enter to cancel: "
+        ).strip()
         if not new_birthday:
             typing_output("Birthday has not been changed.", color="yellow")
             return
@@ -716,16 +733,24 @@ def edit_contact():
     elif what_change == "address":
         address = record.address
         if not address:
-            typing_output("This contact doesn't have a address set. Use 'expand contact' instead.", color="yellow")
+            typing_output(
+                "This contact doesn't have a address set. Use 'expand contact' instead.",
+                color="yellow",
+            )
             return
 
-        new_address = input(f"Enter new address (current: '{address}') or press Enter to cancel: ").strip()
+        new_address = input(
+            f"Enter new address (current: '{address}') or press Enter to cancel: "
+        ).strip()
         if not new_address:
             typing_output("Address has not been changed.", color="yellow")
             return
         update_address(name, new_address)
     else:
-        typing_output(f"Invalid option: {what_change}. Choose from: email, phone, birthday", color="yellow")
+        typing_output(
+            f"Invalid option: {what_change}. Choose from: email, phone, birthday",
+            color="yellow",
+        )
 
 
 def expand_contact():
@@ -736,7 +761,9 @@ def expand_contact():
         typing_output(f"Contact {name} not found. ❗", color="yellow")
         return
 
-    what_add = input("Which parameter do you want to expand? (phone, email, birthday, address): ").lower()
+    what_add = input(
+        "Which parameter do you want to expand? (phone, email, birthday, address): "
+    ).lower()
 
     if what_add == "phone":
         existing_phones = [phone.value for phone in record.phones]
@@ -745,7 +772,9 @@ def expand_contact():
             for index, phone in enumerate(existing_phones, 1):
                 typing_output(f"{index}. {phone}")
 
-        phone = input("Enter the phone number to add (or press Enter to cancel): ").strip()
+        phone = input(
+            "Enter the phone number to add (or press Enter to cancel): "
+        ).strip()
         if not phone:
             typing_output("No phone added.", color="yellow")
             return
@@ -760,7 +789,9 @@ def expand_contact():
             for index, email in enumerate(existing_emails, 1):
                 typing_output(f"{index}. {email}")
 
-        email = input("Enter the email address to add (or press Enter to cancel): ").strip()
+        email = input(
+            "Enter the email address to add (or press Enter to cancel): "
+        ).strip()
         if not email:
             typing_output("No email added.", color="yellow")
             return
@@ -775,7 +806,9 @@ def expand_contact():
             if change != "y":
                 return
 
-        birthday = input("Enter birthday (dd.mm.yyyy) or press Enter to cancel: ").strip()
+        birthday = input(
+            "Enter birthday (dd.mm.yyyy) or press Enter to cancel: "
+        ).strip()
         if not birthday:
             typing_output("No birthday added.", color="yellow")
             return
@@ -797,7 +830,10 @@ def expand_contact():
         add_address(name, address)
 
     else:
-        typing_output(f"Invalid option: {what_add}. Choose from: phone, email, birthday", color="yellow")
+        typing_output(
+            f"Invalid option: {what_add}. Choose from: phone, email, birthday",
+            color="yellow",
+        )
 
 
 def delete_contact():
@@ -808,7 +844,9 @@ def delete_contact():
         typing_output(f"Contact {name} not found. ❗", color="yellow")
         return
 
-    what_to_delete = input("Do you want to delete the entire contact or just a field? (contact/field): ").lower()
+    what_to_delete = input(
+        "Do you want to delete the entire contact or just a field? (contact/field): "
+    ).lower()
 
     if what_to_delete in ["contact", "c"]:
         confirm = input(f"Are you sure you want to delete {name}? (y/n): ").lower()
@@ -820,7 +858,9 @@ def delete_contact():
             typing_output("Deletion cancelled.", color="yellow")
 
     elif what_to_delete in ["field", "f"]:
-        field = input("Which field do you want to delete? (phone/email/address): ").lower()
+        field = input(
+            "Which field do you want to delete? (phone/email/address): "
+        ).lower()
 
         if field == "phone":
             phones = [phone.value for phone in record.phones]
@@ -832,8 +872,15 @@ def delete_contact():
             for index, phone in enumerate(phones, 1):
                 typing_output(f"{index}. {phone}")
 
-            phone_index = input("Enter the number of the phone to delete (or press Enter to cancel): ").strip()
-            if not phone_index or not phone_index.isdigit() or int(phone_index) < 1 or int(phone_index) > len(phones):
+            phone_index = input(
+                "Enter the number of the phone to delete (or press Enter to cancel): "
+            ).strip()
+            if (
+                not phone_index
+                or not phone_index.isdigit()
+                or int(phone_index) < 1
+                or int(phone_index) > len(phones)
+            ):
                 typing_output("Invalid selection or cancelled.", color="yellow")
                 return
 
@@ -845,15 +892,24 @@ def delete_contact():
         elif field == "email":
             emails = [email.value for email in record.emails]
             if not emails:
-                typing_output(f"Contact '{name}' has no email addresses.", color="yellow")
+                typing_output(
+                    f"Contact '{name}' has no email addresses.", color="yellow"
+                )
                 return
 
             typing_output(f"Contact '{name}' has these emails:")
             for index, email in enumerate(emails, 1):
                 typing_output(f"{index}. {email}")
 
-            email_index = input("Enter the number of the email to delete (or press Enter to cancel): ").strip()
-            if not email_index or not email_index.isdigit() or int(email_index) < 1 or int(email_index) > len(emails):
+            email_index = input(
+                "Enter the number of the email to delete (or press Enter to cancel): "
+            ).strip()
+            if (
+                not email_index
+                or not email_index.isdigit()
+                or int(email_index) < 1
+                or int(email_index) > len(emails)
+            ):
                 typing_output("Invalid selection or cancelled.", color="yellow")
                 return
 
@@ -865,7 +921,9 @@ def delete_contact():
         elif field == "address":
             address = record.address
             if not address:
-                typing_output(f"Contact '{name}' has no addresses to delete.", color="yellow")
+                typing_output(
+                    f"Contact '{name}' has no addresses to delete.", color="yellow"
+                )
                 return
 
             typing_output(f"Contact '{name}' has address: {address}")
@@ -877,7 +935,12 @@ def delete_contact():
             typing_output(f"Address {address} removed from {name}. ✅", color="green")
 
         else:
-            typing_output(f"Invalid field: {field}. Choose from: phone, email", color="yellow")
+            typing_output(
+                f"Invalid field: {field}. Choose from: phone, email", color="yellow"
+            )
 
     else:
-        typing_output(f"Invalid option: {what_to_delete}. Choose either 'contact' or 'field'", color="yellow")
+        typing_output(
+            f"Invalid option: {what_to_delete}. Choose either 'contact' or 'field'",
+            color="yellow",
+        )
