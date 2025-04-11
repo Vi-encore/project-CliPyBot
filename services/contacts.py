@@ -90,6 +90,18 @@ def add():
             console.print("Invalid birthday format.❗ ", style="red")
             typing_output("Please use the format dd.mm.yyyy. ", color="yellow")
 
+    # Loop for address
+    while True:
+        address = typing_input("Contact address (press Enter to skip): (str) ").strip()
+        if not address:
+            break
+        try:
+            record.add_address(address)
+            break
+        except Exception as e:
+            console.print("Invalid address format.❗ ", style="red")
+            typing_output(f"Please use the format dd.mm.yyyy. ", color="yellow")
+
     save_contacts(book)
 
     typing_output(f'Contact "{name}" saved successfully. ✅', color="green")
@@ -481,7 +493,68 @@ def update_birthday(*args: tuple):
     typing_output(f"New birthday 🍰: {record.birthday.value}")
     return 0
 
+# =================
+# === BIRTHDAY ===
+# =================
 
+
+# ADD ADDRESS
+@check_arguments(2)
+@input_error
+def add_address(*args: tuple):
+    *name_parts, address = args
+    name = " ".join(name_parts)
+
+    record = book.find_by_name(name)
+
+    if not record:
+        no_record_message(name)
+        typing_output("Cannot add address. ⛔", color="yellow")
+        return 1
+
+    record.add_address(address)
+    save_contacts(book)
+
+    typing_output(f"Address updated for {name} ✅")
+    typing_output(f"New address: {record.address.value}")
+    return 0
+
+# UPDATE ADDRESS
+@check_arguments(2)
+@input_error
+def update_address(*args: tuple):
+    *name_parts, new_address = args
+    name = " ".join(name_parts)
+
+    record = book.find_by_name(name)
+
+    if not record:
+        no_record_message(name)
+        typing_output("Cannot update address. ⛔", color="yellow")
+        return 1
+
+    record.add_address(new_address)
+    save_contacts(book)
+
+    typing_output(f"Address updated for {name} ✅")
+    typing_output(f"New Address: {record.address.value}")
+    return 0
+
+
+def delete_address(*args: tuple):
+    *name_parts, address = args
+    name = " ".join(name_parts)
+    record = book.find_by_name(name)
+
+    if not record:
+        no_record_message(name)
+        typing_output(f"Cannot delete address. ⛔", color="yellow")
+        return 1
+
+    record.delete_address(address)
+    save_contacts(book)
+    typing_output(f'Email "{address}" for {name} deleted. ✅')
+    return 0
 # ================
 # === EXPORT ===
 # ================
@@ -622,7 +695,17 @@ def edit_contact():
             return
 
         update_birthday(name, new_birthday)
+    elif what_change == "address":
+        address = record.address
+        if not address:
+            typing_output("This contact doesn't have a address set. Use 'expand contact' instead.", color="yellow")
+            return
 
+        new_address = input(f"Enter new address (current: '{address}') or press Enter to cancel: ").strip()
+        if not new_address:
+            typing_output("Address has not been changed.", color="yellow")
+            return
+        update_address(name, new_address)
     else:
         typing_output(f"Invalid option: {what_change}. Choose from: email, phone, birthday", color="yellow")
 
@@ -635,7 +718,7 @@ def expand_contact():
         typing_output(f"Contact {name} not found. ❗", color="yellow")
         return
 
-    what_add = input("Which parameter do you want to expand? (phone, email, birthday): ").lower()
+    what_add = input("Which parameter do you want to expand? (phone, email, birthday, address): ").lower()
 
     if what_add == "phone":
         existing_phones = [phone.value for phone in record.phones]
@@ -682,6 +765,19 @@ def expand_contact():
         add_birthday(name, birthday)
         typing_output(f"Birthday added to {name} successfully. ✅", color="green")
 
+    elif what_add == "address":
+        if record.address:
+            typing_output(f"Contact '{name}' already has a address: {record.address}")
+            change = input("Do you want to change it? (y/n): ").lower()
+            if change != "y":
+                return
+        address = input("Enter address to add (or press Enter to cancel): ").strip()
+        if not address:
+            typing_output("No address added.", color="yellow")
+            return
+
+        add_address(name, address)
+
     else:
         typing_output(f"Invalid option: {what_add}. Choose from: phone, email, birthday", color="yellow")
 
@@ -706,7 +802,7 @@ def delete_contact():
             typing_output("Deletion cancelled.", color="yellow")
 
     elif what_to_delete in ["field", "f"]:
-        field = input("Which field do you want to delete? (phone/email): ").lower()
+        field = input("Which field do you want to delete? (phone/email/address): ").lower()
 
         if field == "phone":
             phones = [phone.value for phone in record.phones]
@@ -747,6 +843,20 @@ def delete_contact():
             delete_email(name, email)
             save_contacts(book)
             typing_output(f"Email {email} removed from {name}. ✅", color="green")
+
+        elif field == "address":
+            address = record.address
+            if not address:
+                typing_output(f"Contact '{name}' has no addresses to delete.", color="yellow")
+                return
+
+            typing_output(f"Contact '{name}' has address: {address}")
+            change = input("Do you want to delete address? (y/n): ").lower()
+            if change != "y":
+                typing_output("Address deletion canceled.", color="yellow")
+                return
+            delete_address(name, address)
+            typing_output(f"Address {address} removed from {name}. ✅", color="green")
 
         else:
             typing_output(f"Invalid field: {field}. Choose from: phone, email", color="yellow")

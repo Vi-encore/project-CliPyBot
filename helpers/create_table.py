@@ -9,7 +9,7 @@ console = Console()
 # SHOW CONTACT 
 def show_contact_in_table(record):
     """ Function to display contact details in a table """
-    name, phones, emails, birthday = record.get_display_data()
+    name, phones, emails, birthday, address = record.get_display_data()
     
     table = Table(
         show_header=True,               # Show header
@@ -23,12 +23,13 @@ def show_contact_in_table(record):
     table.add_column("Phones", justify="left", width=20)
     table.add_column("Emails", justify="left", width=20)
     table.add_column("Birthday", justify="left", width=20)
+    table.add_column("Address", justify="left", width=20)
 
     # Format phones and emails with new lines
     phones_str = "\n".join(phones) if phones else "-"
     emails_str = "\n".join(emails) if emails else "-"
     
-    table.add_row(name, phones_str, emails_str, birthday or "-")
+    table.add_row(name, phones_str, emails_str, birthday or "-", address or "-")
 
     # Display the table
     console.print(table)
@@ -52,12 +53,13 @@ def show_all_contacts_table(records):
     table.add_column("Phones", justify="left", width=20)
     table.add_column("Emails", justify="left", width=20)
     table.add_column("Birthday", justify="left", width=20)
+    table.add_column("Address", justify="left", width=20)
 
     for record in records:
-        name, phones, emails, birthday = record.get_display_data()
+        name, phones, emails, birthday, address = record.get_display_data()
         phones_str = "\n".join(phones) if phones else "-"
         emails_str = "\n".join(emails) if emails else "-"
-        table.add_row(name, phones_str, emails_str, birthday or "-")
+        table.add_row(name, phones_str, emails_str, birthday or "-", address or "-")
         table.add_section()  # Adds a separating line between contacts
 
     console.print(table)
