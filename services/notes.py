@@ -193,10 +193,36 @@ def change_note() -> bool:
                     return False
 
             elif tag_action == "edit":
+                # Enumerate tags and allow user to select which one to edit
                 typing_output(
                     f"Current tags: {', '.join(tag.value for tag in note.tags) if note.tags else 'None'}"
                 )
-                old_tag = typing_input("Enter tag to edit: ")
+                tags = list(note.tags)  # Convert tags to a list for enumeration
+                for i, tag in enumerate(tags, 1):
+                    typing_output(f"{i}. {tag.value}")
+
+                while True:
+                    tag_choice = input(
+                        "Enter the number of the tag you want to edit (int): "
+                    ).strip()
+                    if not tag_choice.isdigit():
+                        typing_output(
+                            "Invalid input! Please enter a valid number.",
+                            color="yellow",
+                        )
+                        continue
+
+                    tag_index = int(tag_choice) - 1  # Convert to zero-based index
+                    if 0 <= tag_index < len(tags):
+                        old_tag = tags[tag_index].value
+                        break
+                    else:
+                        typing_output(
+                            "Invalid number! Please choose a number from the list.",
+                            color="yellow",
+                        )
+                        return False
+
                 new_tag = typing_input("Enter new tag value: ")
                 try:
                     note.edit_tag(old_tag, new_tag)
@@ -211,10 +237,36 @@ def change_note() -> bool:
                     return False
 
             elif tag_action == "delete":
+                # Enumerate tags and allow user to select which one to delete
                 typing_output(
                     f"Current tags: {', '.join(tag.value for tag in note.tags) if note.tags else 'None'}"
                 )
-                tag_to_delete = typing_input("Enter tag to delete: ")
+                tags = list(note.tags)  # Convert tags to a list for enumeration
+                for i, tag in enumerate(tags, 1):
+                    typing_output(f"{i}. {tag.value}")
+
+                while True:
+                    tag_choice = input(
+                        "Enter the number of the tag you want to delete (int): "
+                    ).strip()
+                    if not tag_choice.isdigit():
+                        typing_output(
+                            "Invalid input! Please enter a valid number.",
+                            color="yellow",
+                        )
+                        continue
+
+                    tag_index = int(tag_choice) - 1  # Convert to zero-based index
+                    if 0 <= tag_index < len(tags):
+                        tag_to_delete = tags[tag_index].value
+                        break
+                    else:
+                        typing_output(
+                            "Invalid number! Please choose a number from the list.",
+                            color="yellow",
+                        )
+                        return False
+
                 try:
                     note.delete_tag(tag_to_delete)
                     save_notes(notes)
@@ -276,7 +328,6 @@ def delete_note() -> bool:
                 typing_output(
                     "Invalid number! Please choose a number from the list.",
                     color="yellow",
-
                 )
                 return False
 
