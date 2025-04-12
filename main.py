@@ -51,9 +51,9 @@ def execute_command(cmd: str, args: list):
         contacts.expand_contact()
     elif cmd == "show contact":  # done
         contacts.display_contact()
-        #####################TESTING##################
     elif cmd == "delete contact":
         contacts.delete_contact()
+        ###############NOTES################
     elif cmd == "add note":
         notes.add()
     elif cmd == "all notes":
