@@ -1,13 +1,13 @@
 all_available_commands = [
-    "delete contact",  # done
     "add contact",  # done
     "find contact",  # done
     "all contacts",  # done
     "all birthdays",  # done, but something with table?
-    "export contacts",  # here
     "edit contact",  # here
+    "delete contact",  # done
     "expand contact",  # done
     "show contact",
+    "export contacts",  # here
     #########NOTES#################
     "all notes",  # done
     "add note",  # done

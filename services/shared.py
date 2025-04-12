@@ -47,19 +47,15 @@ def show_help():
 
     # Define the commands and their descriptions
     contact_commands = {
-        "hello": "Greets the user.",
         "add contact": "Adds a new contact.",
         "find contact": "Finds a contact by name.",
-        "delete contact": "Removes an existing contact.",
         "all contacts": "Shows all contacts.",
-        "show phone": "Shows all phone numbers for a contact.",
-        "show email": "Shows all emails for a contact.",
-        "delete email": "Deletes an email from a contact.", #?????
-        "show birthday": "Shows a contact’s birthday.",
         "all birthdays": "Shows all upcoming birthdays for the next week.",
+        "edit contact": "Edit existing contact",
+        "delete contact": "Delete existing contact",
+        "expand contact": "Add info to existing contact",
+        "show contact": "Show info for existing contact",
         "export contacts": "Exports all contacts to a CSV file.",
-        "help": "Shows the list of available commands.",
-        "close": "Closes the bot.",
     }
 
     for command, description in contact_commands.items():
@@ -83,13 +79,13 @@ def show_help():
     notes_table.add_column("Description", style="cyan italic")
     # Define the commands and their descriptions
     notes_commands = {
+        "all notes": "Shows all notes.",
         "add note": "Adds a new note.",
-        "delete note": "Removes an existing note.",
-        "show notes": "Shows all notes.",
-        # "show note": "Shows a specific note.", #maybe do 
-        "change note": "Updates an existing note.",
         "find note": "To find some not with keyword",
+        "change note": "Updates an existing note.",
+        "delete note": "Removes an existing note.",
         "export notes": "Exports all contacts to a CSV file.",
+        "show note": "Shows a specific note.",
     }
     for command, description in notes_commands.items():
         notes_table.add_row(command, description)
