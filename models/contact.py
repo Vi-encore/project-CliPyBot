@@ -121,6 +121,9 @@ class Record:
     def add_birthday(self, birthday: str):
         self.birthday = Birthday(birthday)
 
+    def delete_birthday(self, birthday: str):
+        self.birthday = None
+
     # === ADDRESS ===
     def add_address(self, address: str):
         self.address = Address(address)
