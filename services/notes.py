@@ -242,227 +242,109 @@ def change_note() -> bool:
         return False
 
 
-# @input_error
-# def change_note() -> bool:
-#     # all()
-#     """Edit existing note (content or tags)"""
-#     try:
-#         # Display all notes for reference
-#         if not notes.data:
-#             print("No notes found!")
-#             return False
-
-#         typing_output("\nAvailable notes:")
-#         for i, title in enumerate(notes.data.keys(), 1):
-#             typing_output(f"{i}. {title}")
-
-#         # Get note to edit
-#         title = typing_input("\nEnter the title of the note to edit: ").strip()
-#         note = notes.find_note(title)
-
-#         if not note:
-#             console.print(f"Note '{title}' not found! ", style="red")
-#             return False
-
-#         # Show current note details
-#         show_note(note)
-
-#         # Choose what to edit
-#         edit_choice = typing_input(
-#             "\nWhat do you want to edit? (content/tags): "  # if noting here - you did not chose any option
-#         ).lower()
-
-#         if edit_choice == "content":
-#             # Edit content
-#             typing_output(f"Current content: {note.content}")  # typing
-#             new_content = typing_input("Enter new content: ")
-#             if not new_content:
-#                 console.print("Content update skipped! ", style="red")
-#                 return False
-#                 # new_content = "-"
-
-#             try:
-#                 note.edit_content(new_content)
-#                 save_notes(notes)
-#                 show_note(note)
-#                 typing_output(
-#                     "Content updated successfully ✓ ", color="green"
-#                 )  # typing
-#             except ValueError as e:
-#                 console.print(f"Error updating content: {e} ", style="red")
-#                 # print(f"Error updating content: {e}")
-#                 return False
-
-#         elif edit_choice == "tags":
-#             # Edit tags
-#             tag_action = typing_input(
-#                 "Do you want to (add/edit/delete) tags?: "
-#             ).lower()
-
-#             if tag_action == "add":
-#                 # Add new tag
-#                 new_tag = typing_input("Enter new tag: ")
-#                 try:
-#                     if new_tag in [t.value for t in note.tags]:  # will that break?
-#                         console.print(f"Tag {new_tag} already exists! ", style="yellow")
-#                     else:
-#                         note.add_tag(new_tag)
-
-#                     save_notes(notes)
-#                     show_note(note)
-#                     typing_output(
-#                         f"Tag '{new_tag}' added successfully ✓ ", color="green"
-#                     )  # typing
-
-#                 except ValueError as e:
-#                     console.print(f"Error adding tag: {e} ", style="red")
-#                     return False
-
-#             elif tag_action == "edit":
-#                 # Edit existing tag
-#                 typing_output(
-#                     f"Current tags: {', '.join(tag.value for tag in note.tags) if note.tags else 'None'}"
-#                 )
-#                 old_tag = typing_input("Enter tag to edit: ")
-#                 new_tag = typing_input("Enter new tag value: ")
-
-#                 try:
-#                     note.edit_tag(old_tag, new_tag)
-#                     save_notes(notes)
-#                     show_note(note)
-#                     typing_output(
-#                         f"Tag '{old_tag}' updated to '{new_tag}' successfully ✓  ",
-#                         color="green",
-#                     )
-#                 except ValueError as e:
-#                     console.print(f"Error editing tag: {e} ", style="red")
-#                     return False
-
-#             elif tag_action == "delete":
-#                 # Delete a tag
-#                 typing_output(
-#                     f"Current tags: {', '.join(tag.value for tag in note.tags) if note.tags else 'None'}"
-#                 )
-#                 tag_to_delete = typing_input("Enter tag to delete: ")
-
-#                 try:
-#                     note.delete_tag(tag_to_delete)
-#                     save_notes(notes)
-#                     show_note(note)
-#                     typing_output(
-#                         f"Tag '{tag_to_delete}' deleted successfully ✓ ", color="green"
-#                     )
-#                 except ValueError as e:
-#                     console.print(f"Error deleting tag: {e} ", style="red")
-#                     return False
-
-#             else:
-#                 print("Invalid tag action!")
-#                 return False
-
-#         else:
-#             print("Invalid choice! Please enter 'content' or 'tags'.")
-#             return False
-
-#         # Save notes after edit
-#         typing_output(f"Note '{title}' updated successfully ✓ ", color="green")
-#         return True
-
-#     except Exception as e:
-#         console.print(f"Error editing note: {e} ", style="red")
-#         return False
-
-
 @input_error
 def delete_note() -> bool:
-    all()
     """Delete note, content, or tags"""
     try:
-        # Display all notes for reference
+        # Check if the notes dictionary is empty
         if not notes.data:
-            console.print(f"No notes found! ", style="red")
+            console.print("No notes found!", style="red")
             return False
 
-        print("\nAvailable notes:")
-        for i, title in enumerate(notes.data.keys(), 1):
+        # Display all notes with numbers for reference
+        typing_output("\nAvailable notes:")
+        titles = list(notes.data.keys())
+        for i, title in enumerate(titles, 1):
             typing_output(f"{i}. {title}")
 
-        # Get note to modify
-        title = typing_input("\nEnter the title of the note: ").strip()
-        note = notes.find_note(title)
-        print(note)
+        # Prompt user to select a note by number
+        while True:
+            user_choice = input(
+                "Enter the number of the note you want to delete (int): "
+            ).strip()
+            if not user_choice.isdigit():  # Check if input is numeric
+                typing_output(
+                    "Invalid input! Please enter a valid number.", color="yellow"
+                )
+                continue
 
+            note_index = int(user_choice) - 1  # Convert to zero-based index
+            if 0 <= note_index < len(titles):
+                title = titles[note_index]  # Retrieve the selected note title
+                break
+            else:
+                typing_output(
+                    "Invalid number! Please choose a number from the list.",
+                    color="yellow",
+
+                )
+                return False
+
+        # Find the selected note
+        note = notes.find_note(title)
         if not note:
-            console.print(f"Note {title} not found! ", style="red")
+            console.print(f"Note '{title}' not found!", style="red")
             return False
 
-        # Choose what to delete
+        # Prompt user to choose what to delete
         delete_choice = typing_input(
             "What do you want to delete? (all/content/tags): "
         ).lower()
-
         if delete_choice == "all":
-            # Delete entire note
+            # Delete the entire note
             notes.delete_note(title)
-            show_all_notes_table(notes)
-            # show_note(note)
-            print(f"Note '{title}' deleted successfully ✓")
+            show_all_notes_table(notes)  # Example: Display updated notes
+            typing_output(f"Note '{title}' deleted successfully ✓", color="green")
 
         elif delete_choice == "content":
-            # Delete just the content
+            # Delete the content only
             note.delete_content()
             save_notes(notes)
             show_note(note)
             typing_output(
-                f"Content of note '{title}' deleted successfully ✓ ", color="green"
+                f"Content of note '{title}' deleted successfully ✓", color="green"
             )
 
         elif delete_choice == "tags":
-            # Delete tags - either all or specific ones
+            # Handle tag deletion (all or specific tags)
             tag_delete_mode = typing_input(
                 "Delete (all) tags or a (specific) tag? "
             ).lower()
-
             if tag_delete_mode == "all":
-                note.tags = []
+                note.tags = []  # Clear all tags
                 save_notes(notes)
                 show_note(note)
                 typing_output(
-                    f"All tags of note '{title}' deleted successfully ✓ ", color="green"
+                    f"All tags of note '{title}' deleted successfully ✓", color="green"
                 )
 
             elif tag_delete_mode == "specific":
                 typing_output(
                     f"Current tags: {', '.join(tag.value for tag in note.tags) if note.tags else 'None'}"
                 )
-                tag_to_delete = typing_input("Enter tag to delete: ")
-
+                tag_to_delete = typing_input("Enter tag to delete: ").strip()
                 try:
                     note.delete_tag(tag_to_delete)
                     save_notes(notes)
                     show_note(note)
                     typing_output(
-                        f"Tag '{tag_to_delete}' deleted successfully ✓ ", color="green"
+                        f"Tag '{tag_to_delete}' deleted successfully ✓", color="green"
                     )
                 except ValueError as e:
-                    console.print(f"Error deleting tag: {e} ", style="red")
+                    console.print(f"Error deleting tag: {e}", style="red")
                     return False
-
             else:
-                console.print(f"Invalid tag deletion mode ", style="red")
+                console.print("Invalid tag deletion mode.", style="red")
                 return False
 
         else:
-            console.print(
-                f"You did not enter anything!",
-                style="red",
-            )
+            console.print("You did not choose a valid option!", style="red")
             return False
 
         return True
 
     except Exception as e:
-        console.print(f"Error deleting note components: {e} ", style="red")
+        console.print(f"Error deleting note components: {e}", style="red")
         return False
 
 
