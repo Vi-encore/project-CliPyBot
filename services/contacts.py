@@ -192,7 +192,7 @@ def find():
 
 # REMOVE CONTACT
 @check_arguments(1)
-@input_error #???????
+@input_error  # ???????
 def remove(*args: tuple):
     name = " ".join(args)
 
@@ -665,9 +665,12 @@ def export_contacts_to_csv():
         console.print(f"Error writing to file: {e} 🚨 ", style="red")
 
 
+@input_error
 def edit_contact():
-    all()
-    name = input("For whom do you want to change info? (name): ").title()
+    all()  # enumerate?
+    name = input(
+        "For whom do you want to change info? (name): "
+    ).title()  # all names starts with Upper?
     record = book.find_by_name(name)
     if not record:
         typing_output(f"Contact {name} not found. ❗", color="yellow")
@@ -858,6 +861,7 @@ def expand_contact():
         )
 
 
+@input_error
 def delete_contact():
     all()
     name = input("What contact do you want to modify? (name): ").title()
@@ -979,3 +983,36 @@ def delete_contact():
             f"Invalid option: {what_to_delete}. Choose either 'contact' or 'field'",
             color="yellow",
         )
+
+
+@input_error
+def display_contact():
+    if not book.data:
+        typing_output("The contact book is empty ", color="yellow")
+        return
+
+    for index, name in enumerate(book.data.keys(), 1):
+        typing_output(f"{index}. {name}")
+    while True:
+        what_contact = input("Enter number of contact you want to show (int): ")
+        if not what_contact:
+            typing_output(f"You did not chose any contact", color="yellow")  # ??
+            try_again = input("Would you like to try again? (y/n): ").lower()
+            if try_again != "y":
+                print("Exiting contact selection.")
+                return
+        elif not what_contact.isdigit():  # Check if the input is not a number
+            typing_output("Invalid input! Please enter a valid number.", color="yellow")
+        else:
+            selected_index = int(what_contact) - 1
+            if 0 <= selected_index < len(book.data):
+                # selected_name = book.find_by_name(name)
+                selected_name = list(book.data.keys())[selected_index]
+                show_contact(book.find_by_name(selected_name))
+                break
+            else:
+                typing_output(
+                    "Invalid contact number. Please select from the list",
+                    color="yellow",
+                )
+                return
