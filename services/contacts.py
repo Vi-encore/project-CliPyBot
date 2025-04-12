@@ -131,9 +131,9 @@ def find():
             typing_output("You can enter any other command")
             return 1
 
-        if query not in ["1", "2", "3", "4"]:
+        if query not in ["1", "2", "3", "4", "5"]:
             typing_output(
-                "Invalid option. Please enter a number between 1 and 4. ❗",
+                "Invalid option. Please enter a number between 1 and 5. ❗",
                 color="yellow",
             )
             continue
@@ -148,9 +148,11 @@ def find():
         args = typing_input("Enter the email address: (str): ").strip().split()
     elif query == "4":
         args = typing_input("Enter the birthday (dd.mm.yyyy): (str): ").strip().split()
+    elif query == "5":
+        args = typing_input("Enter the address: (str): ").strip().split()
     else:
         typing_output(
-            "Invalid option. Please enter a number between 1 and 4. ❗", color="yellow"
+            "Invalid option. Please enter a number between 1 and 5. ❗", color="yellow"
         )
         return 1
     if not args:
@@ -168,9 +170,11 @@ def find():
         result = book.find(" ".join(args), by_email=True)
     elif query == "4":  # search by birthday
         result = book.find(" ".join(args), by_birthday=True)
+    elif query == "5":
+        result = book.find(" ".join(args), by_address=True)
     else:
         typing_output(
-            "Invalid option. Please enter a number between 1 and 4. ❗", color="yellow"
+            "Invalid option. Please enter a number between 1 and 5. ❗", color="yellow"
         )
         return 1
 
@@ -444,6 +448,24 @@ def add_birthday(*args: tuple):
     typing_output(f"Birthday 🍰: {record.birthday.value}")
     return 0
 
+
+# DELETE BIRTHDAY
+@check_arguments(2)
+@input_error
+def delete_birthday(*args: tuple):
+    *name_parts, birthday = args
+    name = " ".join(name_parts)
+
+    record = book.find_by_name(name)
+
+    if not record:
+        no_record_message(name)
+        typing_output("Cannot delete birthday. ⛔", color="yellow")
+        return 1
+
+    record.delete_birthday(birthday)
+
+    return 0
 
 # SHOW BIRTHDAY
 @check_arguments(1)
@@ -751,7 +773,7 @@ def edit_contact():
         update_address(name, new_address)
     else:
         typing_output(
-            f"Invalid option: {what_change}. Choose from: email, phone, birthday",
+            f"Invalid option: {what_change}. Choose from: email, phone, birthday, address",
             color="yellow",
         )
 
@@ -834,7 +856,7 @@ def expand_contact():
 
     else:
         typing_output(
-            f"Invalid option: {what_add}. Choose from: phone, email, birthday",
+            f"Invalid option: {what_add}. Choose from: phone, email, birthday, address",
             color="yellow",
         )
 
@@ -863,7 +885,7 @@ def delete_contact():
 
     elif what_to_delete in ["field", "f"]:
         field = input(
-            "Which field do you want to delete? (phone/email/address): "
+            "Which field do you want to delete? (phone/email/birthday/address): "
         ).lower()
 
         if field == "phone":
@@ -922,6 +944,19 @@ def delete_contact():
             save_contacts(book)
             typing_output(f"Email {email} removed from {name}. ✅", color="green")
 
+        elif field == "birthday":
+            birthday = record.birthday
+            if not birthday:
+                typing_output(f"Contact '{name}' has no birthday.", color="yellow")
+                return
+
+            change = input("Do you want to delete birthday? (y/n): ").lower()
+            if change != "y":
+                typing_output("Birthday deletion cancelled.", color="yellow")
+                return
+            delete_birthday(name, birthday)
+            typing_output(f"Birthday {birthday} deleted.", color="yellow")
+
         elif field == "address":
             address = record.address
             if not address:
@@ -940,7 +975,7 @@ def delete_contact():
 
         else:
             typing_output(
-                f"Invalid field: {field}. Choose from: phone, email", color="yellow"
+                f"Invalid field: {field}. Choose from: phone, email, birthday, address", color="yellow"
             )
 
     else:

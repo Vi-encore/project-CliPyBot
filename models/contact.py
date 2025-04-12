@@ -121,6 +121,9 @@ class Record:
     def add_birthday(self, birthday: str):
         self.birthday = Birthday(birthday)
 
+    def delete_birthday(self, birthday: str):
+        self.birthday = None
+
     # === ADDRESS ===
     def add_address(self, address: str):
         self.address = Address(address)
@@ -154,7 +157,7 @@ class AddressBook:
         self.data[record.name.value] = record
 
     @exception_handler
-    def find(self, query: str, by_name=False, by_phone=False, by_email=False, by_birthday=False) -> list:
+    def find(self, query: str, by_name=False, by_phone=False, by_email=False, by_birthday=False, by_address=False) -> list:
         query = query.strip().lower()
         results = []
 
@@ -167,7 +170,8 @@ class AddressBook:
                 results.append(record)
             elif by_birthday and record.birthday and query in record.birthday.value.lower():
                 results.append(record)
-
+            elif by_address and record.address and query in record.address.value.lower():
+                results.append(record)
         return results
 
     def find_by_name(self, name):
