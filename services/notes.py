@@ -384,6 +384,7 @@ def export_notes_to_csv() -> None:
 
 
 # what to do here code in Bolma
+@input_error
 def find():
     print("")
     show_options_for_query_notes()
@@ -453,3 +454,33 @@ def find():
     show_all_notes_table(result)  # show contacts details in table
     print("")
     return 0
+
+
+@input_error
+def display_note():
+    if not notes.data:
+        typing_output("The contact book is empty ", color="yellow")
+        return
+
+    for index, title in enumerate(notes.data.keys(), 1):
+        typing_output(f"{index}. {title}")
+    while True:
+        what_contact = input("Enter number of contact you want to show (int): ")
+        if not what_contact:
+            typing_output(f"You did not chose any note", color="yellow")  # ??
+            try_again = input("Would you like to try again? (y/n): ").lower()
+            if try_again != "y":
+                print("Exiting note selection.")
+                return
+        elif not what_contact.isdigit():  # Check if the input is not a number
+            typing_output("Invalid input! Please enter a valid number.", color="yellow")
+        else:
+            selected_index = int(what_contact) - 1
+            if 0 <= selected_index < len(notes.data):
+                # selected_name = book.find_by_name(name)
+                selected_name = list(notes.data.keys())[selected_index]
+                show_note(notes.find_note(selected_name))
+                break
+            else:
+                typing_output("Invalid note number. Please select from the list", color='yellow')
+                return

@@ -1,5 +1,3 @@
-
-
 from fuzzywuzzy import process
 from services import contacts, notes
 from helpers.helpers import parse_input
@@ -35,37 +33,30 @@ def suggest_and_execute_command(cmd: str, args: list, func):
 
     return False
 
+
 def execute_command(cmd: str, args: list):
-    if cmd == 'add contact': #done
+    if cmd == "add contact":  # done
         contacts.add()
-    elif cmd == 'find contact': #done
+    elif cmd == "find contact":  # done
         contacts.find(*args)
-    elif cmd == 'remove contact': #?????????
-        contacts.remove(*args)
-    elif cmd == "all contacts": #done
+    elif cmd == "all contacts":  # done
         contacts.all()
-    elif cmd == "show phone": #????
-        contacts.show_phone(*args)
-    elif cmd == "show email": #????
-        contacts.show_email(*args)
-    elif cmd == "delete email":
-        contacts.delete_email(*args)
-    elif cmd == "show birthday": #????
-        contacts.show_birthday(*args)
-    elif cmd == "all birthdays": #done
+    elif cmd == "all birthdays":  # done
         contacts.all_birthdays()
-    elif cmd == "export contacts": #done
+    elif cmd == "export contacts":  # done
         contacts.export_contacts_to_csv()
     elif cmd == "edit contact":  # (name, days_to_upcoming) done
         contacts.edit_contact()
-    elif cmd == "expand contact": #done
+    elif cmd == "expand contact":  # done
         contacts.expand_contact()
+    elif cmd == "show contact":  # done
+        contacts.display_contact()
         #####################TESTING##################
     elif cmd == "delete contact":
         contacts.delete_contact()
     elif cmd == "add note":
         notes.add()
-    elif cmd == "show notes":
+    elif cmd == "all notes":
         notes.all()
     elif cmd == "change note":
         notes.change_note()
@@ -73,6 +64,8 @@ def execute_command(cmd: str, args: list):
         notes.delete_note(),
     elif cmd == "find note":
         notes.find(),
+    elif cmd == "show note":
+        notes.display_note(),
     elif cmd == "export notes":
         notes.export_notes_to_csv(),
 

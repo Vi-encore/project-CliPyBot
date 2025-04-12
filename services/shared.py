@@ -86,7 +86,7 @@ def show_help():
         "add note": "Adds a new note.",
         "delete note": "Removes an existing note.",
         "show notes": "Shows all notes.",
-        "show note": "Shows a specific note.",
+        # "show note": "Shows a specific note.", #maybe do 
         "change note": "Updates an existing note.",
         "find note": "To find some not with keyword",
         "export notes": "Exports all contacts to a CSV file.",
