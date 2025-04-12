@@ -674,7 +674,7 @@ def edit_contact():
         return
 
     what_change = input(
-        "What info do you want to change? (email, phone, birthday): "
+        "What info do you want to change? (email, phone, birthday, address): "
     ).lower()
 
     if what_change == "email":
