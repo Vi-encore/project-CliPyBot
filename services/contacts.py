@@ -1,4 +1,5 @@
 import csv
+from typing import Literal
 from pathlib import Path
 import datetime as dt
 from datetime import datetime as dtdt
@@ -18,13 +19,32 @@ from data.state import book
 console = Console()
 
 
-def no_record_message(name):
+def no_record_message(name: str) -> None:
+    """
+    Display a message when a contact is not found.
+
+    Args:
+        name (str): Name of the contact that was not found.
+
+    Returns:
+        None
+    """
     typing_output(f'Contact "{name}" not found.❗', color="yellow")
     return
 
 
-def show_contact(record):
+def show_contact(record) -> None:
+    """
+    Display a single contact's details in a formatted table.
+
+    Args:
+        record (Record): The contact record to display.
+
+    Returns:
+        None
+    """
     print("")
+    print(type(record))
     show_contact_in_table(record)
     print("")
     return
@@ -37,7 +57,16 @@ def show_contact(record):
 
 # ADD NEW CONTACT
 @input_error
-def add():
+def add() -> Literal[1, 0]:
+    """
+    Add a new contact to the address book with details like name, phone, email, birthday and address.
+
+    This function interactively prompts the user for contact information and validates the input.
+    If a contact with the provided name already exists, it updates that contact.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     name = typing_input("Contact name: (str): ")
     if not name:
         console.print("Name is required to create a contact. ❗", style="red")
@@ -111,7 +140,16 @@ def add():
 
 # FIND CONTACT
 @input_error
-def find():
+def find() -> Literal[1, 0]:
+    """
+    Find contacts based on various search criteria.
+
+    Allows searching for contacts by name, phone, email, birthday, or address.
+    Displays search options and prompts the user for search parameters.
+
+    Returns:
+        int: 0 for success, 1 for failure or no results
+    """
     print("")
     show_options_for_query()
     print("")
@@ -192,8 +230,17 @@ def find():
 
 # REMOVE CONTACT
 @check_arguments(1)
-@input_error  # ???????
-def remove(*args: tuple):
+@input_error
+def remove(*args: tuple) -> Literal[1, 0]:
+    """
+    Remove a contact from the address book.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact to remove.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     name = " ".join(args)
 
     record = book.find_by_name(name)
@@ -224,7 +271,13 @@ def remove(*args: tuple):
 
 # ALL CONTACTS
 @input_error
-def all():
+def all() -> Literal[1, 0]:
+    """
+    Display all contacts in the address book.
+
+    Returns:
+        int: 0 for success, 1 if no contacts found
+    """
     if not book.data:
         typing_output(f"No records found")
         return 1
@@ -245,7 +298,17 @@ def all():
 # ADD PHONE
 @check_arguments(2)
 @input_error
-def add_phone(*args: tuple):
+def add_phone(*args: tuple) -> Literal[1, 0]:
+    """
+    Add a phone number to an existing contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact
+                      and the phone number to add.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, phone = args
     name = " ".join(name_parts)
 
@@ -265,7 +328,17 @@ def add_phone(*args: tuple):
 # CHANGE PHONE
 @check_arguments(3)
 @input_error
-def change_phone(*args: tuple):
+def change_phone(*args: tuple) -> Literal[1, 0]:
+    """
+    Change an existing phone number for a contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact,
+                      the old phone number, and the new phone number.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, old_phone, new_phone = args
     name = " ".join(name_parts)
 
@@ -288,7 +361,16 @@ def change_phone(*args: tuple):
 # SHOW PHONE
 @check_arguments(1)
 @input_error
-def show_phone(*args: tuple):
+def show_phone(*args: tuple) -> Literal[1, 0]:
+    """
+    Display all phone numbers for a specified contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     name = " ".join(args)
 
     record = book.find_by_name(name)
@@ -309,7 +391,17 @@ def show_phone(*args: tuple):
 # DELETE PHONE
 @check_arguments(2)
 @input_error
-def delete_phone(*args: tuple):
+def delete_phone(*args: tuple) -> Literal[1, 0]:
+    """
+    Delete a phone number from a specified contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact
+                    and the phone number to delete.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, phone = args
     name = " ".join(name_parts)
 
@@ -335,7 +427,17 @@ def delete_phone(*args: tuple):
 # ADD EMAIL
 @check_arguments(2)
 @input_error
-def add_email(*args: tuple):
+def add_email(*args: tuple) -> Literal[1, 0]:
+    """
+    Add an email address to an existing contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact
+                    and the email to add.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, email = args
     name = " ".join(name_parts)
 
@@ -354,7 +456,17 @@ def add_email(*args: tuple):
 
 @check_arguments(3)
 @input_error
-def change_email(*args: tuple):
+def change_email(*args: tuple) -> Literal[1, 0]:
+    """
+    Change an existing email address for a contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact,
+                    the old email, and the new email.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, old_email, new_email = args
     name = " ".join(name_parts)
 
@@ -377,7 +489,16 @@ def change_email(*args: tuple):
 
 @check_arguments(1)
 @input_error
-def show_email(*args: tuple):
+def show_email(*args: tuple) -> Literal[1, 0]:
+    """
+    Display all email addresses for a specified contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     name = " ".join(args)
 
     record = book.find_by_name(name)
@@ -400,7 +521,17 @@ def show_email(*args: tuple):
 
 @check_arguments(2)
 @input_error
-def delete_email(*args: tuple):
+def delete_email(*args: tuple) -> Literal[1, 0]:
+    """
+    Delete an email address from a specified contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact
+                    and the email to delete.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, email = args
     name = " ".join(name_parts)
 
@@ -430,7 +561,17 @@ def delete_email(*args: tuple):
 # ADD BIRTHDAY
 @check_arguments(2)
 @input_error
-def add_birthday(*args: tuple):
+def add_birthday(*args: tuple) -> Literal[1, 0]:
+    """
+    Add a birthday to an existing contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact
+                    and the birthday (in dd.mm.yyyy format) to add.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, birthday = args
     name = " ".join(name_parts)
 
@@ -452,7 +593,17 @@ def add_birthday(*args: tuple):
 # DELETE BIRTHDAY
 @check_arguments(2)
 @input_error
-def delete_birthday(*args: tuple):
+def delete_birthday(*args: tuple) -> Literal[1, 0]:
+    """
+    Delete a birthday from a specified contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact
+                    and the birthday to delete.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, birthday = args
     name = " ".join(name_parts)
 
@@ -467,10 +618,20 @@ def delete_birthday(*args: tuple):
 
     return 0
 
+
 # SHOW BIRTHDAY
 @check_arguments(1)
 @input_error
-def show_birthday(*args: tuple):
+def show_birthday(*args: tuple) -> Literal[1, 0]:
+    """
+    Display the birthday for a specified contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     name = " ".join(args)
 
     record = book.find_by_name(name)
@@ -487,7 +648,16 @@ def show_birthday(*args: tuple):
 
 # SHOW ALL BIRTHDAYS
 @input_error
-def all_birthdays():
+def all_birthdays() -> Literal[1, 0] | None:
+    """
+    Display all upcoming birthdays within a specified number of days.
+
+    Prompts the user for the number of days to look ahead and displays
+    any birthdays that will occur within that timeframe.
+
+    Returns:
+        int: 0 for success, 1 if no upcoming birthdays found
+    """
     try:
         days = int(input("Enter a days number, in which to check? (int):"))
         if not days:
@@ -517,7 +687,17 @@ def all_birthdays():
 # UPDATE BIRTHDAY
 @check_arguments(2)
 @input_error
-def update_birthday(*args: tuple):
+def update_birthday(*args: tuple) -> Literal[1, 0]:
+    """
+    Update the birthday for an existing contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact
+                    and the new birthday (in dd.mm.yyyy format).
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, new_birthday = args
     name = " ".join(name_parts)
 
@@ -537,14 +717,24 @@ def update_birthday(*args: tuple):
 
 
 # =================
-# === BIRTHDAY ===
+# === ADDRESS ===
 # =================
 
 
 # ADD ADDRESS
 @check_arguments(2)
 @input_error
-def add_address(*args: tuple):
+def add_address(*args: tuple) -> Literal[1, 0]:
+    """
+    Add an address to an existing contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact
+                    and the address to add.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, address = args
     name = " ".join(name_parts)
 
@@ -566,7 +756,17 @@ def add_address(*args: tuple):
 # UPDATE ADDRESS
 @check_arguments(2)
 @input_error
-def update_address(*args: tuple):
+def update_address(*args: tuple) -> Literal[1, 0]:
+    """
+    Update the address for an existing contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact
+                    and the new address.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, new_address = args
     name = " ".join(name_parts)
 
@@ -585,7 +785,17 @@ def update_address(*args: tuple):
     return 0
 
 
-def delete_address(*args: tuple):
+def delete_address(*args: tuple) -> Literal[1, 0]:
+    """
+    Delete an address from a specified contact.
+
+    Args:
+        *args (tuple): Variable length argument list containing the name of the contact
+                    and the address to delete.
+
+    Returns:
+        int: 0 for success, 1 for failure
+    """
     *name_parts, address = args
     name = " ".join(name_parts)
     record = book.find_by_name(name)
@@ -608,7 +818,17 @@ def delete_address(*args: tuple):
 
 # EXPORT TO CSV
 @input_error
-def export_contacts_to_csv():
+def export_contacts_to_csv() -> None:
+    """
+    Export all contacts to a CSV file.
+
+    Prompts the user for the directory path to save the CSV file and creates
+    a file with the current date in the filename. Uses a default path if the
+    user doesn't specify one.
+
+    Returns:
+        None
+    """
     today = dtdt.now().strftime("%d.%m.%Y")
     filename = f"contacts_{today}.csv"
 
@@ -666,7 +886,16 @@ def export_contacts_to_csv():
 
 
 @input_error
-def edit_contact():
+def edit_contact() -> None:
+    """
+    Edit details of an existing contact.
+
+    Displays all contacts, prompts the user to select one, and then allows
+    editing of different contact fields (email, phone, birthday, address).
+
+    Returns:
+        None
+    """
     all()  # enumerate?
     name = input(
         "For whom do you want to change info? (name): "
@@ -778,7 +1007,17 @@ def edit_contact():
         )
 
 
-def expand_contact():
+def expand_contact() -> None:
+    """
+    Expands a contact's information by adding additional details such as
+    phone number, email, birthday, or address.
+
+    Prompts the user to specify which parameter to add for a given contact.
+    Checks if the contact exists in the contact book before proceeding.
+
+    Returns:
+        None
+    """
     all()
     name = input("What contact do you want to expand? (name): ").title()
     record = book.find_by_name(name)
@@ -854,7 +1093,7 @@ def expand_contact():
 
         add_address(name, address)
 
-    else:
+    else:  # test
         typing_output(
             f"Invalid option: {what_add}. Choose from: phone, email, birthday, address",
             color="yellow",
@@ -862,7 +1101,16 @@ def expand_contact():
 
 
 @input_error
-def delete_contact():
+def delete_contact() -> None:
+    """
+    Deletes a contact or specific fields from a contact's information.
+
+    Prompts the user to choose between deleting the entire contact or
+    a specific field such as phone, email, birthday, or address.
+
+    Returns:
+        None
+    """
     all()
     name = input("What contact do you want to modify? (name): ").title()
     record = book.find_by_name(name)
@@ -975,7 +1223,8 @@ def delete_contact():
 
         else:
             typing_output(
-                f"Invalid field: {field}. Choose from: phone, email, birthday, address", color="yellow"
+                f"Invalid field: {field}. Choose from: phone, email, birthday, address",
+                color="yellow",
             )
 
     else:
@@ -986,7 +1235,17 @@ def delete_contact():
 
 
 @input_error
-def display_contact():
+def display_contact() -> None:
+    """
+    Displays the details of a contact selected by the user.
+
+    Shows all available contacts and prompts the user to select one
+    by entering its index. If an invalid or empty selection is made,
+    the user is prompted again.
+
+    Returns:
+        None
+    """
     if not book.data:
         typing_output("The contact book is empty ", color="yellow")
         return
@@ -996,7 +1255,7 @@ def display_contact():
     while True:
         what_contact = input("Enter number of contact you want to show (int): ")
         if not what_contact:
-            typing_output(f"You did not chose any contact", color="yellow")  # ??
+            typing_output(f"You did not choose any contact", color="yellow")
             try_again = input("Would you like to try again? (y/n): ").lower()
             if try_again != "y":
                 print("Exiting contact selection.")
@@ -1006,7 +1265,6 @@ def display_contact():
         else:
             selected_index = int(what_contact) - 1
             if 0 <= selected_index < len(book.data):
-                # selected_name = book.find_by_name(name)
                 selected_name = list(book.data.keys())[selected_index]
                 show_contact(book.find_by_name(selected_name))
                 break

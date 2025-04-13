@@ -1,25 +1,33 @@
 all_available_commands = [
-    "add contact",  # done
-    "find contact",  # done
-    "all contacts",  # done
-    "all birthdays",  # done, but something with table?
-    "edit contact",  # here
-    "delete contact",  # done
-    "expand contact",  # done
+    "add contact",
+    "find contact",
+    "all contacts",
+    "all birthdays",
+    "edit contact",
+    "delete contact",
+    "expand contact",
     "show contact",
-    "export contacts",  # here
-    #########NOTES#################
-    "all notes",  # done
-    "add note",  # done
-    "find note",  # done
-    "change note",  # done
-    "delete note",  # done
-    "export notes",  # done
+    "export contacts",
+    "all notes",
+    "add note",
+    "find note",
+    "change note",
+    "delete note",
+    "export notes",
     "show note",
 ]
 
 
-def commands():
+def commands() -> list[str]:
+    """
+    Retrieves the list of all available commands for the assistant bot.
+
+    The commands encompass functionalities for managing contacts
+    and notes, such as adding, editing, finding, deleting, and exporting data.
+
+    Returns:
+        list[str]: A list of string commands supported by the bot.
+    """
     return all_available_commands
 
 
