@@ -1,7 +1,7 @@
 import re
 import datetime as dt
 from datetime import datetime as dtdt, timedelta
-from decorators.decorators import exception_handler
+from decorators.decorators import exception_handler, input_error
 from helpers.validators import validate_and_normalize_phone
 from helpers.validators import standardize_name
 
@@ -105,6 +105,7 @@ class Phone(Field):
         Raises:
             ValueError: If the phone number format is invalid.
         """
+
         if not validate_and_normalize_phone(phone):
             raise ValueError(
                 f"Invalid phone number: {phone}. Phone must be exactly 10 digits"
@@ -221,6 +222,7 @@ class Record:
         self.birthday = None
         self.address = None
 
+    @input_error
     def add_phone(self, phone: str) -> None:
         """
         Add a phone number to the contact.
