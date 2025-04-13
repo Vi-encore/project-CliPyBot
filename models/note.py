@@ -80,7 +80,8 @@ class Tag(Field):
         tag = self.create_tag(tag.strip())
         super().__init__(tag)
 
-    def create_tag(self, tag: str) -> str:
+    @staticmethod
+    def create_tag(tag: str) -> str:
         """
         Format tag by adding a hashtag and replacing spaces with underscores.
 

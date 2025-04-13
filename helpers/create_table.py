@@ -226,9 +226,10 @@ def show_all_notes_table(notes) -> None:
 
     for note in notes:
         title, content, tags = note.get_display_data()
+        content = content if note.content else "-"
         tags = note.tags if note.tags else []
-        tags_str = ",".join(tag.value for tag in tags)
-        table.add_row(title, content, tags_str or "-")
+        tags_str = ",".join(tag.value for tag in tags) if note.tags else "-"
+        table.add_row(title, content, tags_str)
         table.add_section()  # Adds a separating line between notes
 
     console.print(table)

@@ -551,7 +551,7 @@ def find() -> Literal[1, 0]:
         break
 
     # Get args based on query
-    if query == "1":  # search by name
+    if query == "1":  # search by title
         args = typing_input("Enter a title of the note: (str): ").strip().split()
     elif query == "2":
         args = typing_input("Enter a content: (str): ").strip().split()
@@ -569,11 +569,11 @@ def find() -> Literal[1, 0]:
         return 1
 
     # Call the find method with the appropriate arguments
-    if query == "1":  # search by name
+    if query == "1":  # search by title
         result = notes.search(" ".join(args), by_title=True)
-    elif query == "2":  # search by phone
+    elif query == "2":  # search by content
         result = notes.search(" ".join(args), by_content=True)
-    elif query == "3":  # search by email
+    elif query == "3":  # search by tag
         result = notes.search(" ".join(args), by_tag=True)
     else:
         typing_output(
@@ -584,11 +584,11 @@ def find() -> Literal[1, 0]:
     if not result:
         typing_output("No note found. ❗", color="yellow")
         return 1
-    # If a record is found, show the contact details
+    # If a note is found, show the contact details
 
     print("")
     typing_output("Note found:")
-    show_all_notes_table(result)  # show contacts details in table
+    show_all_notes_table(result)  # show notes details in table
     print("")
     return 0
 
@@ -622,7 +622,6 @@ def display_note() -> None:
         else:
             selected_index = int(what_contact) - 1
             if 0 <= selected_index < len(notes.data):
-                # selected_name = book.find_by_name(name)
                 selected_name = list(notes.data.keys())[selected_index]
                 show_note(notes.find_note(selected_name))
                 break
