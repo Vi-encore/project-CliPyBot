@@ -158,7 +158,7 @@ def show_notes_in_table(note):
 
 
 def show_all_notes_table(notes):
-    """Display all contacts in a single styled table"""
+    """Display all notes in a single styled table"""
     if not notes:
         console.print("[bold red]No notes to display.[/]")
         return
@@ -167,13 +167,13 @@ def show_all_notes_table(notes):
         show_header=True,
         header_style="bold green",
         box=box.ROUNDED,
-        title="Contacts List 🗂️",
+        title="Notes List 🗂️",
         title_justify="center",
         title_style="bold dark_green",
     )
-    table.add_column("Name", style="bold white on green", width=20)
-    table.add_column("content", justify="left", width=50)
-    table.add_column("tags", justify="left", width=20)
+    table.add_column("Title", style="bold white on green", width=20)
+    table.add_column("Content", justify="left", width=50)
+    table.add_column("Tags", justify="left", width=20)
     # print(notes.data)
     # tags_str = "\n".join(tags) if tags else "-"
 

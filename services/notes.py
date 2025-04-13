@@ -518,12 +518,12 @@ def find():
         return 1
 
     if not result:
-        typing_output("No record found. ❗", color="yellow")
+        typing_output("No note found. ❗", color="yellow")
         return 1
     # If a record is found, show the contact details
 
     print("")
-    typing_output("Contact found:")
+    typing_output("Note found:")
     show_all_notes_table(result)  # show contacts details in table
     print("")
     return 0
