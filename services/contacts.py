@@ -1174,7 +1174,6 @@ def delete_contact() -> None:
 
             phone = phones[int(phone_index) - 1]
             delete_phone(name, phone)
-            save_contacts(book)
             typing_output(f"Phone {phone} removed from {name}. ✅", color="green")
 
         elif field == "email":
@@ -1203,7 +1202,6 @@ def delete_contact() -> None:
 
             email = emails[int(email_index) - 1]
             delete_email(name, email)
-            save_contacts(book)
             typing_output(f"Email {email} removed from {name}. ✅", color="green")
 
         elif field == "birthday":
