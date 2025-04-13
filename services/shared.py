@@ -50,7 +50,7 @@ def show_help():
         "add contact": "Adds a new contact.",
         "find contact": "Finds a contact by name.",
         "all contacts": "Shows all contacts.",
-        "all birthdays": "Shows all upcoming birthdays for the next week.",
+        "all birthdays": "Shows all upcoming birthdays",
         "edit contact": "Edit existing contact",
         "delete contact": "Delete existing contact",
         "expand contact": "Add info to existing contact",
@@ -81,7 +81,7 @@ def show_help():
     notes_commands = {
         "all notes": "Shows all notes.",
         "add note": "Adds a new note.",
-        "find note": "To find some not with keyword",
+        "find note": "To find some note with keyword",
         "change note": "Updates an existing note.",
         "delete note": "Removes an existing note.",
         "export notes": "Exports all contacts to a CSV file.",
