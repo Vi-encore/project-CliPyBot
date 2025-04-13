@@ -1,57 +1,144 @@
-from colorama import Fore, Back, Style
-from services import contacts
+from fuzzywuzzy import process
+from services import contacts, notes
 from helpers.helpers import parse_input
+from helpers.commands import commands_list
+from services.shared import show_help, close, hello, goodbye, greeting
+from helpers.typing_effect import typing_input, typing_output
+from rich.console import Console
 
-def main():
-    '''
-        Main function for the assistant bot
-        takes following commands:add
-        - hello - greets the user
-        - add <name> <phone> - adds a contact
-        - change <name> <old_phone> <new_phone> - replace phone number 
-        - phone <name> - shows all phones of a contact
-        - all - shows all contacts
-        - add-birthday <name> <birthday>- add birthday to the contact
-        - show-birthday <name> - show birthday date of the contact
-        - birthdays - show all upcoming birthdays for the next week (workdays)
-        - close/exit - closes the bot
-    '''
-    print( Back.LIGHTWHITE_EX + Fore.BLACK + "Welcome to the assistant bot!" + Style.RESET_ALL)
-    print('')
+# Initialize Console for rich output
+console = Console()
+
+
+def suggest_and_execute_command(cmd: str, args: list, func) -> bool:
+    """
+    Suggest and execute a command based on the user's input.
+
+    Args:
+        cmd (str): The user's input command.
+        args (list): Additional arguments passed along with the command.
+        func (function): The function to execute the command.
+
+    Returns:
+        bool: True if a suggested command is executed, otherwise False.
+    """
+    if not cmd or cmd.strip() == "":
+        return False
+
+    # Get suggestion using fuzzywuzzy
+    match = process.extractOne(cmd.strip().lower(), commands_list)
+
+    if match and match[1] >= 70:  # Only consider matches with score of 70 or higher
+        suggested_cmd = match[0]
+
+        # Ask user if they want to execute the suggested command
+        console.print(
+            f'Did you mean [sea_green3]"{suggested_cmd}"[/]?', style="gold1 italic"
+        )
+        response = typing_input(f'Run "{suggested_cmd}" instead? (y/n): ')
+
+        if response.lower() in ("y", "yes"):
+            # Execute the suggested command
+            func(suggested_cmd, args)
+            return True
+
+    return False
+
+
+def execute_command(cmd: str, args: list) -> None:
+    """
+    Execute the appropriate function based on the provided command.
+
+    Args:
+        cmd (str): The command to execute.
+        args (list): Additional arguments for the command.
+
+    This function handles both contact-related and note-related commands.
+    """
+    if cmd == "add contact":
+        contacts.add()
+    elif cmd == "find contact":
+        contacts.find(*args)
+    elif cmd == "all contacts":
+        contacts.all()
+    elif cmd == "all birthdays":
+        contacts.all_birthdays()
+    elif cmd == "export contacts":
+        contacts.export_contacts_to_csv()
+    elif cmd == "edit contact":
+        contacts.edit_contact()
+    elif cmd == "expand contact":
+        contacts.expand_contact()
+    elif cmd == "show contact":
+        contacts.display_contact()
+    elif cmd == "delete contact":
+        contacts.delete_contact()
+    elif cmd == "add note":
+        notes.add()
+    elif cmd == "all notes":
+        notes.all()
+    elif cmd == "change note":
+        notes.change_note()
+    elif cmd == "delete note":
+        notes.delete_note()
+    elif cmd == "find note":
+        notes.find()
+    elif cmd == "show note":
+        notes.display_note()
+    elif cmd == "export notes":
+        notes.export_notes_to_csv()
+
+
+def main() -> None:
+    """
+    Main function for the assistant bot that interacts with users.
+
+    This bot provides functionalities for managing contacts and notes.
+    It supports various commands to add, modify, delete, and export data.
+    """
+    greeting()
+
     while True:
-        user_input = input(Fore.BLUE + 'Enter a command: ' + Style.RESET_ALL)
-        if user_input.strip() == '':
-            print(Fore.YELLOW + 'Please enter a command.')
+        user_input = typing_input("Enter a command </>: ")
+        if user_input.strip() == "":
+            console.print("No command entered ⚠️", style="red bold")
+            typing_output("Please enter a command. ", color="yellow", s_style="italic")
+            print("")
             continue
-        
+
         cmd, *args = parse_input(user_input)
-        
-        if cmd == '':
-            print(Fore.YELLOW + 'Please enter a command.')
+
+        if cmd == "":
+            console.print("Please enter a command.", style="yellow italic")
             continue
-        elif cmd in ["close", "exit"]:
-            contacts.close()
+        elif cmd in ["close", "exit", "quit"]:
+            close()
             break
-        elif cmd == 'hello':
-            print(Fore.GREEN + 'Hello! I am your assistant, how can I help you?' + Style.RESET_ALL)
-        elif cmd == 'add':
-            contacts.add(*args)
-        elif cmd == 'remove':
-            contacts.remove(*args)
-        elif cmd == 'change':
-            contacts.change(*args)
-        elif cmd == 'phone':
-            contacts.phone(*args)
-        elif cmd == 'all':
-            contacts.all()
-        elif cmd == 'add-birthday':
-            contacts.add_birthday(*args)
-        elif cmd == 'show-birthday':
-            contacts.show_birthday(*args)
-        elif cmd == 'birthdays':
-            contacts.birthdays()
+        elif cmd == "hello":
+            hello()
+        elif cmd == "help":
+            show_help()
+        elif cmd == "goodbye":  # to close presentation
+            goodbye()
+            break
+
+        # Contact commands
+        elif cmd in commands_list:
+            execute_command(cmd, args)
+
+        # Notes commands
         else:
-            print(Fore.YELLOW + 'Unknown command. Please try again.')
-         
-if __name__ == '__main__':
+            print("")
+            console.print("Unknown command ⚠️", style="red bold")
+            print("")
+            if not suggest_and_execute_command(cmd, args, execute_command):
+                # If no suggestion was executed, show the help message
+                console.print(
+                    'To get info about available commands, please type [blue]"help"[/] ',
+                    style="yellow italic",
+                )
+            print("")
+
+
+if __name__ == "__main__":
     main()
