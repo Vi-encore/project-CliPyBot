@@ -105,6 +105,7 @@ class Phone(Field):
         Raises:
             ValueError: If the phone number format is invalid.
         """
+
         if not validate_and_normalize_phone(phone):
             raise ValueError(
                 f"Invalid phone number: {phone}. Phone must be exactly 10 digits"
