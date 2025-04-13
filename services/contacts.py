@@ -772,7 +772,7 @@ def delete_address(*args: tuple) -> Literal[1, 0]:
 
     record.delete_address(address)
     save_contacts(book)
-    typing_output(f'Email "{address}" for {name} deleted. ✅')
+    typing_output(f'Address "{address}" for {name} deleted. ✅')
     return 0
 
 
