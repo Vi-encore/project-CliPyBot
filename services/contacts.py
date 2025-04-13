@@ -4,6 +4,7 @@ from pathlib import Path
 import datetime as dt
 from datetime import datetime as dtdt
 from decorators.decorators import input_error, check_arguments
+from helpers.validators import validate_and_normalize_phone, validate_email_str, validate_date_str
 from models.contact import Record
 from helpers.helpers import save_contacts
 from rich.console import Console
@@ -44,7 +45,6 @@ def show_contact(record) -> None:
         None
     """
     print("")
-    print(type(record))
     show_contact_in_table(record)
     print("")
     return
@@ -320,7 +320,6 @@ def add_phone(*args: tuple) -> Literal[1, 0]:
 
     record.add_phone(phone)
     save_contacts(book)
-    typing_output(f"Phone added ✅")
     show_contact(record)  # show contact details in table
     return 0
 
@@ -932,7 +931,9 @@ def edit_contact() -> None:
                 if not new_email:
                     typing_output("No changes were made to the email.", color="yellow")
                     return
-
+                if not validate_email_str(new_email):
+                    typing_output("Invalid email format.", color="red")
+                    return
                 change_email(name, old_email, new_email)
                 break
             else:
@@ -962,6 +963,11 @@ def edit_contact() -> None:
                     typing_output("No changes were made to the phone.", color="yellow")
                     return
 
+                normalized_phone = validate_and_normalize_phone(new_phone)
+                if not normalized_phone:
+                    typing_output(f"Invalid phone number: {new_phone}. Phone must be exactly 10 digits 🚨", color="red")
+                    return
+
                 change_phone(name, old_phone, new_phone)
                 break
             else:
@@ -982,7 +988,9 @@ def edit_contact() -> None:
         if not new_birthday:
             typing_output("Birthday has not been changed.", color="yellow")
             return
-
+        if not validate_date_str(new_birthday):
+            typing_output("Invalid birthday format.", color="red")
+            return
         update_birthday(name, new_birthday)
     elif what_change == "address":
         address = record.address
@@ -1042,9 +1050,11 @@ def expand_contact() -> None:
         if not phone:
             typing_output("No phone added.", color="yellow")
             return
-
+        normalized_phone = validate_and_normalize_phone(phone)
+        if not normalized_phone:
+            typing_output(f"Invalid phone number: {phone}. Phone must be exactly 10 digits 🚨", color="red")
+            return
         add_phone(name, phone)
-        typing_output(f"Phone {phone} added to {name} successfully. ✅", color="green")
 
     elif what_add == "email":
         existing_emails = [email.value for email in record.emails]
@@ -1059,7 +1069,9 @@ def expand_contact() -> None:
         if not email:
             typing_output("No email added.", color="yellow")
             return
-
+        if not validate_email_str(email):
+            typing_output("Invalid email format.", color="red")
+            return
         add_email(name, email)
         typing_output(f"Email {email} added to {name} successfully. ✅", color="green")
 
@@ -1076,9 +1088,11 @@ def expand_contact() -> None:
         if not birthday:
             typing_output("No birthday added.", color="yellow")
             return
+        if not validate_date_str(birthday):
+            typing_output("Invalid birthday format.", color="red")
+            return
 
         add_birthday(name, birthday)
-        typing_output(f"Birthday added to {name} successfully. ✅", color="green")
 
     elif what_add == "address":
         if record.address:
