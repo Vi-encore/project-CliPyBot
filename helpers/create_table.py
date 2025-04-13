@@ -18,9 +18,9 @@ def show_contact_in_table(record):
         box=box.ROUNDED,  # Customize table shape
         title=f"{name} 👨",  # Title for the table
         title_justify="center",  # Center the title
-        title_style="bold dark_green",  # Title style
+        title_style="bold sea_green3",  # Title style
     )
-    table.add_column("Name", style="dark_green", width=20)
+    table.add_column("Name", style="sea_green3", width=20)
     table.add_column("Phones", justify="left", width=20)
     table.add_column("Emails", justify="left", width=20)
     table.add_column("Birthday", justify="left", width=20)
@@ -49,7 +49,7 @@ def show_all_contacts_table(records):
         box=box.ROUNDED,
         title="Contacts List 🗂️",
         title_justify="center",
-        title_style="bold dark_green",
+        title_style="bold sea_green3",
     )
     table.add_column("Name", style="bold white on green", width=20)
     table.add_column("Phones", justify="left", width=20)
@@ -80,7 +80,7 @@ def show_birthdays_table(birthdays):
         box=box.ROUNDED,
         title="Birthdays List 🍰",
         title_justify="center",
-        title_style="bold dark_green",
+        title_style="bold sea_green3",
     )
     table.add_column("Upcoming Birthdays", style="bold white on green", width=20)
     table.add_column("Birthday", justify="left", width=20)
@@ -115,7 +115,7 @@ def show_options_for_query():
         box=box.ROUNDED,
         title="Query Options 🔍",
         title_justify="center",
-        title_style="bold dark_green",
+        title_style="bold sea_green3",
     )
     table.add_column("Option", style="bold white on green", width=20)
     table.add_column("Description", justify="left")
@@ -143,9 +143,9 @@ def show_notes_in_table(note):
         box=box.ROUNDED,  # Customize table shape
         title=f"{title} 👨",  # Title for the table
         title_justify="center",  # Center the title
-        title_style="bold dark_green",  # Title style
+        title_style="bold sea_green3",  # Title style
     )
-    table.add_column("Title", style="dark_green", width=20)
+    table.add_column("Title", style="sea_green3", width=20)
     table.add_column("content", justify="left", width=50)
     table.add_column("tags", justify="left", width=20)
     # Format phones and emails with new lines
@@ -169,7 +169,7 @@ def show_all_notes_table(notes):
         box=box.ROUNDED,
         title="Contacts List 🗂️",
         title_justify="center",
-        title_style="bold dark_green",
+        title_style="bold sea_green3",
     )
     table.add_column("Name", style="bold white on green", width=20)
     table.add_column("content", justify="left", width=50)
@@ -200,7 +200,7 @@ def show_options_for_query_notes():
         box=box.ROUNDED,
         title="Query Options 🔍",
         title_justify="center",
-        title_style="bold dark_green",
+        title_style="bold sea_green3",
     )
     table.add_column("Option", style="bold white on green", width=20)
     table.add_column("Description", justify="left")

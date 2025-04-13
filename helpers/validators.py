@@ -21,9 +21,7 @@ def validate_and_normalize_phone(phone: str) -> str | None:
 def standardize_name(name: str) -> str:
     name = name.strip()
 
-    if not re.fullmatch(r'[a-zA-Z][a-zA-Z0-9]*', name):
+    if not re.fullmatch(r'[a-zA-Z][a-zA-Z0-9 ]*[a-zA-Z0-9]', name):
         return None
-
-    name = name.capitalize()
-
+    name = ' '.join(word.capitalize() for word in name.split())
     return name

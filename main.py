@@ -22,7 +22,7 @@ def suggest_and_execute_command(cmd: str, args: list, func):
 
         # Ask user if they want to execute the suggested command
         console.print(
-            f'Did you mean "[blue]{suggested_cmd}[/]"?', style="yellow italic"
+            f'Did you mean [sea_green3]"{suggested_cmd}"[/]?', style="gold1 italic"
         )
         response = typing_input(f'Run "{suggested_cmd}" instead? (y/n): ')
 

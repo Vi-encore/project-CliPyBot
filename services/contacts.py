@@ -732,9 +732,11 @@ def edit_contact():
                 if not new_phone:
                     typing_output("No changes were made to the phone.", color="yellow")
                     return
-
-                change_phone(name, old_phone, new_phone)
-                break
+                try:
+                    change_phone(name, old_phone, new_phone)
+                    break
+                except Exception as e:
+                    typing_output(f"Error: {str(e)}. Please try again.", color="yellow")
             else:
                 typing_output("Invalid index. Please try again.", color="yellow")
 
@@ -777,7 +779,7 @@ def edit_contact():
             color="yellow",
         )
 
-
+@input_error
 def expand_contact():
     all()
     name = input("What contact do you want to expand? (name): ").title()
@@ -839,7 +841,6 @@ def expand_contact():
             return
 
         add_birthday(name, birthday)
-        typing_output(f"Birthday added to {name} successfully. ✅", color="green")
 
     elif what_add == "address":
         if record.address:

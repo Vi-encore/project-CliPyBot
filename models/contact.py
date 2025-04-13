@@ -1,7 +1,7 @@
 import re
 import datetime as dt
 from datetime import datetime as dtdt, timedelta
-from decorators.decorators import exception_handler
+from decorators.decorators import exception_handler, input_error
 from helpers.validators import validate_and_normalize_phone
 from helpers.validators import standardize_name
 
@@ -33,7 +33,8 @@ class Phone(Field):
 
     def validate_phone(self, phone):
         if not validate_and_normalize_phone(phone):
-            raise ValueError(f'Invalid phone number: {phone}. Phone must be exactly 10 digits')
+            return 0
+            #raise ValueError(f'Invalid phone number: {phone}. Phone must be exactly 10 digits')
         return validate_and_normalize_phone(phone)
 
 # Email
@@ -73,6 +74,7 @@ class Record:
         self.address = None
 
     # === PHONE ===
+    @exception_handler
     def add_phone(self, phone: str):
         self.phones.append(Phone(phone))
 
