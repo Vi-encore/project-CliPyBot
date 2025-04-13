@@ -11,18 +11,39 @@ console = Console()  # Initialize Console for rich output
 
 
 # GREETING
-def greeting():
-    """Function to greet the user"""
+def greeting() -> None:
+    """
+    Display a welcome message to the user when starting the application.
+
+    Provides an introduction to the Assistant Bot and informs new users
+    how to access the help command for available options.
+
+    Returns:
+        None
+    """
     print("")
     typing_output("Welcome to the Assistant Bot 💻")
     print("")
     typing_output("Loading... Please wait...")
     print("")
+    typing_output(
+        "If you new to this bot - use 'help' to display all available commands"
+    )
+    print("")  # add color to help
 
 
 # HELLO
-def hello():
-    """Function to greet the user"""
+def hello() -> None:
+    """
+    Provide an interactive greeting to the user.
+
+    Displays a Matrix-themed greeting to the user and provides basic information
+    about the bot's functionality related to contacts and notes management.
+    It also informs the user how to access the help command.
+
+    Returns:
+        None
+    """
     print("")
     typing_output("Hello, Neo...  ")
     typing_output("I am your assistant bot. ")
@@ -32,7 +53,21 @@ def hello():
 
 
 # SHOW HELP
-def show_help():
+def show_help() -> None:
+    """
+    Display all available commands and their descriptions in formatted tables.
+
+    Creates and displays three separate tables for different command categories:
+    1. Contact management commands
+    2. Note management commands
+    3. General application commands
+
+    Each table shows the command name and a brief description of its functionality.
+    Tables are formatted using rich library styling for better readability.
+
+    Returns:
+        None
+    """
     # === CONTACTS ===
     contacts_table = Table(
         show_header=True,
@@ -47,15 +82,15 @@ def show_help():
 
     # Define the commands and their descriptions
     contact_commands = {
-        "add contact": "Adds a new contact.",
-        "find contact": "Finds a contact by name.",
-        "all contacts": "Shows all contacts.",
+        "add contact": "Adds a new contact",
+        "find contact": "Finds a contact by name",
+        "all contacts": "Shows all contacts",
         "all birthdays": "Shows all upcoming birthdays",
         "edit contact": "Edit existing contact",
         "delete contact": "Delete existing contact",
         "expand contact": "Add info to existing contact",
         "show contact": "Show info for existing contact",
-        "export contacts": "Exports all contacts to a CSV file.",
+        "export contacts": "Exports all contacts to a CSV file",
     }
 
     for command, description in contact_commands.items():
@@ -79,13 +114,13 @@ def show_help():
     notes_table.add_column("Description", style="cyan italic")
     # Define the commands and their descriptions
     notes_commands = {
-        "all notes": "Shows all notes.",
-        "add note": "Adds a new note.",
+        "all notes": "Shows all notes",
+        "add note": "Adds a new note",
         "find note": "To find some note with keyword",
-        "change note": "Updates an existing note.",
-        "delete note": "Removes an existing note.",
-        "export notes": "Exports all contacts to a CSV file.",
-        "show note": "Shows a specific note.",
+        "change note": "Updates an existing note",
+        "delete note": "Removes an existing note",
+        "export notes": "Exports all contacts to a CSV file",
+        "show note": "Shows a specific note",
     }
     for command, description in notes_commands.items():
         notes_table.add_row(command, description)
@@ -106,9 +141,10 @@ def show_help():
     general_table.add_column("Description", style="cyan italic")
     # Define the commands and their descriptions
     general_commands = {
-        "hello": "Greets the user.",
-        "help": "Shows the list of available commands.",
-        "close/exit/quit": "Closes the bot.",
+        "hello": "Greets the user",
+        "help": "Shows the list of available commands",
+        "close/exit/quit": "Closes the bot",
+        "goodbye": "Closes the bot with some special effect",
     }
     for command, description in general_commands.items():
         general_table.add_row(command, description)
@@ -118,7 +154,16 @@ def show_help():
 
 
 # CLOSE
-def close():
+def close() -> int:
+    """
+    Save all data and exit the application.
+
+    Saves all contact information to persistent storage and displays
+    a goodbye message to the user confirming that data has been saved.
+
+    Returns:
+        int: 0 as a success code to indicate clean exit
+    """
     save_contacts(book)
     typing_output("Goodbye 🐇")
     typing_output("All data saved! 💾")
@@ -126,7 +171,16 @@ def close():
 
 
 # GOODBYE
-def goodbye():
+def goodbye() -> None:
+    """
+    Exit the application with a special Matrix-themed animation.
+
+    Displays a themed goodbye message, saves all data by calling the close()
+    function, and then plays a Matrix-style animation effect before exiting.
+
+    Returns:
+        None
+    """
     typing_output("Goodbye, Neo...  ")
     close()
     time.sleep(2)

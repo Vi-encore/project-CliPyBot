@@ -4,10 +4,12 @@ import random
 import string
 
 from colorama import init, Fore, Back, Style
+
 init(autoreset=True)
 
+
 class MatrixColumn:
-    def __init__(self, rows=10):
+    def __init__(self, rows=10) -> None:
         """
         Represents one column of falling characters. Each column spawns
         random characters which move downward.
@@ -16,36 +18,35 @@ class MatrixColumn:
         self.chars = string.ascii_letters + string.digits + "!@#$%^&*()"
         self.rows = rows
 
-    def update(self):
+    def update(self) -> None:
         """
         Moves all characters down one row. Removes any that pass 'end_line'.
         Spawns a new character at row=0 (top) with a random vanish line.
         """
         for fc in self.falling_chars:
-            fc['line'] += 1
+            fc["line"] += 1
 
-        self.falling_chars = [fc for fc in self.falling_chars if fc['line'] <= fc['end_line']]
+        self.falling_chars = [
+            fc for fc in self.falling_chars if fc["line"] <= fc["end_line"]
+        ]
 
         new_char = random.choice(self.chars)
         end_line = random.randint(self.rows - 5, self.rows - 1)
-        self.falling_chars.append({
-            'char': new_char,
-            'line': 0,
-            'end_line': end_line
-        })
+        self.falling_chars.append({"char": new_char, "line": 0, "end_line": end_line})
 
-    def get_display_line(self, total_lines=10):
+    def get_display_line(self, total_lines=10) -> list:
         """
         Returns a list of length 'total_lines'. Each element is a character
         at that row or a space ' ' if none is present.
         """
         display = [" "] * total_lines
         for fc in self.falling_chars:
-            if 0 <= fc['line'] < total_lines:
-                display[fc['line']] = fc['char']
+            if 0 <= fc["line"] < total_lines:
+                display[fc["line"]] = fc["char"]
         return display
 
-def matrix_drop(duration=7, rows=20, columns=100):
+
+def matrix_drop(duration=7, rows=20, columns=100) -> None:
     """
     Runs the matrix animation for 'duration' seconds, overlaying static text
     that only appears once a falling character "arrives" at each letter's position.
@@ -54,16 +55,16 @@ def matrix_drop(duration=7, rows=20, columns=100):
     # Define the text lines and positions (row, col)
     def build_static_positions():
         text_map = {}
-        
+
         def place_text(row, col, text):
             for i, ch in enumerate(text):
                 text_map[(row, col + i)] = ch
 
         # Lines (0-based indexing):
-        place_text(3,  10, " Project was developed by ")
-        place_text(5,  50, " Neo Dev Group ")
-        place_text(7,  20, " Victoria Mariushko ")
-        place_text(10, 70, " Olena Badum ")
+        place_text(3, 10, " Project was developed by ")
+        place_text(5, 50, " Neo Dev Group ")
+        place_text(7, 20, " Victoria Matiushko ")
+        place_text(10, 70, " Olena Badun ")
         place_text(13, 50, " Oleksandr Sorochynskyi ")
         place_text(14, 10, " Eduard Bolma ")
 
@@ -86,7 +87,7 @@ def matrix_drop(duration=7, rows=20, columns=100):
 
     while time.time() - start_time < duration:
         # Clear screen
-        os.system('cls' if os.name == 'nt' else 'clear')
+        os.system("cls" if os.name == "nt" else "clear")
 
         current_time = time.time()
         # Update columns whose interval is due
@@ -109,9 +110,9 @@ def matrix_drop(duration=7, rows=20, columns=100):
                     if arrived_positions[(row_idx, col_idx)]:
                         # Show with a green background and white foreground
                         c = (
-                            Style.BRIGHT        # Make it bold/bright
-                            + Back.GREEN        # Green background
-                            + Fore.WHITE        # White foreground
+                            Style.BRIGHT  # Make it bold/bright
+                            + Back.GREEN  # Green background
+                            + Fore.WHITE  # White foreground
                             + static_positions[(row_idx, col_idx)]
                             + Style.RESET_ALL
                         )
