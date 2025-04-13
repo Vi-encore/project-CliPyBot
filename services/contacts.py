@@ -91,10 +91,13 @@ def add() -> Literal[1, 0]:
         if not phone:
             break
         try:
+            if not validate_and_normalize_phone(phone):
+                raise Exception
             record.add_phone(phone)
+            # typing_output(f"Phone {phone} added successfully. ✅", color="green")
             break
         except Exception as e:
-            console.print("Invalid phone.❗ ", style="red")
+            console.print("Invalid phone ❗ ", style="red")
             typing_output("Please try again. ", color="yellow")
 
     # Loop for email
