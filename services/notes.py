@@ -157,7 +157,7 @@ def change_note() -> bool:
 
         # Prompt user to select a note by number
         while True:
-            user_choice = input(
+            user_choice = typing_input(
                 "Enter the number of the note you want to edit (int): "
             ).strip()
             if not user_choice.isdigit():  # Check if input is a valid number
@@ -187,9 +187,9 @@ def change_note() -> bool:
         show_note(note)
 
         # Prompt user to choose what to edit
-        edit_choice = typing_input(
-            "\nWhat do you want to edit? (content/tags): "
-        ).lower()
+        edit_choice = (
+            typing_input("\nWhat do you want to edit? (content/tags): ").lower().strip()
+        )
         if edit_choice == "content":
             # Handle content editing
             typing_output(f"Current content: {note.content}")
@@ -210,7 +210,7 @@ def change_note() -> bool:
             # Handle tag editing
             tag_action = typing_input(
                 "Do you want to (add/edit/delete) tags?: "
-            ).lower()
+            ).strip()
 
             if tag_action == "add":
                 new_tag = typing_input("Enter new tag: ")
@@ -220,6 +220,12 @@ def change_note() -> bool:
                             f"Tag '{new_tag}' already exists!", style="yellow"
                         )
                     else:
+                        if len(new_tag) > 25:
+                            console.print(
+                                "Tag should be less than 25 symbols", style="red"
+                            )
+                            return
+
                         note.add_tag(new_tag)
                         save_notes(notes)
                         show_note(note)
@@ -240,7 +246,7 @@ def change_note() -> bool:
                     typing_output(f"{i}. {tag.value}")
 
                 while True:
-                    tag_choice = input(
+                    tag_choice = typing_input(
                         "Enter the number of the tag you want to edit (int): "
                     ).strip()
                     if not tag_choice.isdigit():
@@ -263,6 +269,10 @@ def change_note() -> bool:
 
                 new_tag = typing_input("Enter new tag value: ")
                 try:
+                    if len(new_tag) > 25:
+                        console.print("Tag should be less than 25 symbols", style="red")
+                        return
+
                     note.edit_tag(old_tag, new_tag)
                     save_notes(notes)
                     show_note(note)
@@ -284,7 +294,7 @@ def change_note() -> bool:
                     typing_output(f"{i}. {tag.value}")
 
                 while True:
-                    tag_choice = input(
+                    tag_choice = typing_input(
                         "Enter the number of the tag you want to delete (int): "
                     ).strip()
                     if not tag_choice.isdigit():
@@ -357,7 +367,7 @@ def delete_note() -> bool:
 
         # Prompt user to select a note by number
         while True:
-            user_choice = input(
+            user_choice = typing_input(
                 "Enter the number of the note you want to delete (int): "
             ).strip()
             if not user_choice.isdigit():  # Check if input is numeric
@@ -386,7 +396,7 @@ def delete_note() -> bool:
         # Prompt user to choose what to delete
         delete_choice = typing_input(
             "What do you want to delete? (all/content/tags): "
-        ).lower()
+        ).strip()
         if delete_choice == "all":
             # Delete the entire note
             notes.delete_note(title)
@@ -406,7 +416,7 @@ def delete_note() -> bool:
             # Handle tag deletion (all or specific tags)
             tag_delete_mode = typing_input(
                 "Delete (all) tags or a (specific) tag? "
-            ).lower()
+            ).strip()
             if tag_delete_mode == "all":
                 note.tags = []  # Clear all tags
                 save_notes(notes)
@@ -610,10 +620,10 @@ def display_note() -> None:
     for index, title in enumerate(notes.data.keys(), 1):
         typing_output(f"{index}. {title}")
     while True:
-        what_contact = input("Enter number of contact you want to show (int): ")
+        what_contact = typing_input("Enter number of contact you want to show (int): ")
         if not what_contact:
             typing_output(f"You did not chose any note", color="yellow")  # ??
-            try_again = input("Would you like to try again? (y/n): ").lower()
+            try_again = typing_input("Would you like to try again? (y/n): ").strip()
             if try_again != "y":
                 print("Exiting note selection.")
                 return

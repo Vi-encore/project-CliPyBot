@@ -1086,7 +1086,7 @@ def expand_contact() -> None:
     elif what_add == "birthday":
         if record.birthday:
             typing_output(f"Contact '{name}' already has a birthday: {record.birthday}")
-            change = typing_input("Do you want to change it? (y/n): ").lower()
+            change = typing_input("Do you want to change it? (y/n): ").lower().strip()
             if change != "y":
                 return
 
@@ -1103,7 +1103,7 @@ def expand_contact() -> None:
     elif what_add == "address":
         if record.address:
             typing_output(f"Contact '{name}' already has a address: {record.address}")
-            change = typing_input("Do you want to change it? (y/n): ").lower()
+            change = typing_input("Do you want to change it? (y/n): ").lower().strip()
             if change != "y":
                 return
         address = typing_input(
