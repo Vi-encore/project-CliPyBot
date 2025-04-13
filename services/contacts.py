@@ -235,47 +235,6 @@ def find() -> Literal[1, 0]:
     return 0
 
 
-# REMOVE CONTACT
-@check_arguments(1)
-@input_error
-def remove(*args: tuple) -> Literal[1, 0]:
-    """
-    Remove a contact from the address book.
-
-    Args:
-        *args (tuple): Variable length argument list containing the name of the contact to remove.
-
-    Returns:
-        int: 0 for success, 1 for failure
-    """
-    name = " ".join(args)
-
-    record = book.find_by_name(name)
-
-    if not record:
-        no_record_message(name)
-        typing_output(f"Cannot delete contact. 🚫", color="yellow")
-        return 1
-
-    typing_output("Contact found:")
-    show_contact(record)  # show contact details in table
-
-    confirmation = (
-        typing_input(f'Are you sure you want to delete "{name}"? (y/n) 💊: ')
-        .strip()
-        .lower()
-    )
-    if confirmation == "y":
-        book.delete(name)
-        typing_output(f'Contact "{name}" has been deleted. ✅')
-        save_contacts(book)
-        return 0
-    else:
-        typing_output("Deletion cancelled. ⛔", color="yellow")
-        print("")
-        return 1
-
-
 # ALL CONTACTS
 @input_error
 def all() -> Literal[1, 0]:
@@ -875,7 +834,7 @@ def export_contacts_to_csv() -> None:
     try:
         with filepath.open("w", newline="", encoding="utf-8") as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(["Name", "Phones", "Emails", "Birthday"])
+            writer.writerow(["Name", "Phones", "Emails", "Birthday", "Address"])
             for record in book.data.values():
                 writer.writerow(
                     [
@@ -883,6 +842,7 @@ def export_contacts_to_csv() -> None:
                         ", ".join(p.value for p in record.phones),
                         ", ".join(e.value for e in record.emails),
                         record.birthday.value if record.birthday else "",
+                        record.address.value if record.address else "",
                     ]
                 )
         typing_output(f"Contacts saved to: {filepath} 💾")
@@ -912,7 +872,9 @@ def edit_contact() -> None:
         return
 
     what_change = (
-        typing_input("What info do you want to change? (email, phone, birthday): ")
+        typing_input(
+            "What info do you want to change? (email, phone, birthday, address): "
+        )
         .lower()
         .strip()
     )
@@ -1008,6 +970,8 @@ def edit_contact() -> None:
             typing_output("Invalid birthday format.", color="red")
             return
         update_birthday(name, new_birthday)
+        show_contact(record)
+
     elif what_change == "address":
         address = record.address
         if not address:
@@ -1024,6 +988,7 @@ def edit_contact() -> None:
             typing_output("Address has not been changed.", color="yellow")
             return
         update_address(name, new_address)
+        show_contact(record)
     else:
         typing_output(
             f"Invalid option: {what_change}. Choose from: email, phone, birthday, address",
@@ -1081,6 +1046,7 @@ def expand_contact() -> None:
             )
             return  # Exit if validation fails
 
+        typing_output(f"Phone added successfully. ✅", color="green")
         add_phone(name, phone)
 
     elif what_add == "email":
@@ -1100,7 +1066,7 @@ def expand_contact() -> None:
             typing_output("Invalid email format.", color="red")
             return
         add_email(name, email)
-        typing_output(f"Email {email} added to {name} successfully. ✅", color="green")
+        show_contact(record)
 
     elif what_add == "birthday":
         if record.birthday:
@@ -1120,6 +1086,7 @@ def expand_contact() -> None:
             return
 
         add_birthday(name, birthday)
+        show_contact(record)
 
     elif what_add == "address":
         if record.address:
@@ -1135,6 +1102,7 @@ def expand_contact() -> None:
             return
 
         add_address(name, address)
+        show_contact(record)
 
     else:
         typing_output(
@@ -1179,6 +1147,7 @@ def delete_contact() -> None:
             book.delete(name)
             save_contacts(book)
             typing_output(f"Contact {name} has been deleted. ✅", color="green")
+            show_all_contacts_table(book.data.values())
         else:
             typing_output("Deletion cancelled.", color="yellow")
 
@@ -1215,7 +1184,7 @@ def delete_contact() -> None:
 
             phone = phones[int(phone_index) - 1]
             delete_phone(name, phone)
-            typing_output(f"Phone {phone} removed from {name}. ✅", color="green")
+            show_contact(record)
 
         elif field == "email":
             emails = [email.value for email in record.emails]
@@ -1243,7 +1212,7 @@ def delete_contact() -> None:
 
             email = emails[int(email_index) - 1]
             delete_email(name, email)
-            typing_output(f"Email {email} removed from {name}. ✅", color="green")
+            show_contact(record)
 
         elif field == "birthday":
             birthday = record.birthday
@@ -1259,6 +1228,7 @@ def delete_contact() -> None:
                 return
             delete_birthday(name, birthday)
             typing_output(f"Birthday {birthday} deleted.", color="yellow")
+            show_contact(record)
 
         elif field == "address":
             address = record.address
@@ -1276,7 +1246,7 @@ def delete_contact() -> None:
                 typing_output("Address deletion canceled.", color="yellow")
                 return
             delete_address(name, address)
-            typing_output(f"Address {address} removed from {name}. ✅", color="green")
+            show_contact(record)
 
         else:
             typing_output(

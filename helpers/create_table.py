@@ -193,8 +193,9 @@ def show_notes_in_table(note) -> None:
     table.add_column("Tags", justify="left", width=20)
     # Format phones and emails with new lines
     tags_str = "\n".join(tags) if tags else "-"
+    content = content if note.content else "-"
 
-    table.add_row(title, content, tags_str or "-")
+    table.add_row(title, content or "-", tags_str or "-")
     console.print(table)
 
 
@@ -231,7 +232,7 @@ def show_all_notes_table(notes) -> None:
         content = content if note.content else "-"
         tags = note.tags if note.tags else []
         tags_str = ",".join(tag.value for tag in tags) if note.tags else "-"
-        table.add_row(title, content, tags_str)
+        table.add_row(title, content or "-", tags_str or "-")
         table.add_section()  # Adds a separating line between notes
 
     console.print(table)

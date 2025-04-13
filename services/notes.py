@@ -366,6 +366,7 @@ def delete_note() -> bool:
             return False
 
         # Display all notes with numbers for reference
+        all()
         typing_output("\nAvailable notes:")
         titles = list(notes.data.keys())
         for i, title in enumerate(titles, 1):
