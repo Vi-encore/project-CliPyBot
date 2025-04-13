@@ -10,7 +10,18 @@ from rich.console import Console
 console = Console()
 
 
-def suggest_and_execute_command(cmd: str, args: list, func):
+def suggest_and_execute_command(cmd: str, args: list, func) -> bool:
+    """
+    Suggest and execute a command based on the user's input.
+
+    Args:
+        cmd (str): The user's input command.
+        args (list): Additional arguments passed along with the command.
+        func (function): The function to execute the command.
+
+    Returns:
+        bool: True if a suggested command is executed, otherwise False.
+    """
     if not cmd or cmd.strip() == "":
         return False
 
@@ -34,26 +45,34 @@ def suggest_and_execute_command(cmd: str, args: list, func):
     return False
 
 
-def execute_command(cmd: str, args: list):
-    if cmd == "add contact":  # done
+def execute_command(cmd: str, args: list) -> None:
+    """
+    Execute the appropriate function based on the provided command.
+
+    Args:
+        cmd (str): The command to execute.
+        args (list): Additional arguments for the command.
+
+    This function handles both contact-related and note-related commands.
+    """
+    if cmd == "add contact":
         contacts.add()
-    elif cmd == "find contact":  # done
+    elif cmd == "find contact":
         contacts.find(*args)
-    elif cmd == "all contacts":  # done
+    elif cmd == "all contacts":
         contacts.all()
-    elif cmd == "all birthdays":  # done
+    elif cmd == "all birthdays":
         contacts.all_birthdays()
-    elif cmd == "export contacts":  # done
+    elif cmd == "export contacts":
         contacts.export_contacts_to_csv()
-    elif cmd == "edit contact":  # (name, days_to_upcoming) done
+    elif cmd == "edit contact":
         contacts.edit_contact()
-    elif cmd == "expand contact":  # done
+    elif cmd == "expand contact":
         contacts.expand_contact()
-    elif cmd == "show contact":  # done
+    elif cmd == "show contact":
         contacts.display_contact()
     elif cmd == "delete contact":
         contacts.delete_contact()
-        ###############NOTES################
     elif cmd == "add note":
         notes.add()
     elif cmd == "all notes":
@@ -61,19 +80,21 @@ def execute_command(cmd: str, args: list):
     elif cmd == "change note":
         notes.change_note()
     elif cmd == "delete note":
-        notes.delete_note(),
+        notes.delete_note()
     elif cmd == "find note":
-        notes.find(),
+        notes.find()
     elif cmd == "show note":
-        notes.display_note(),
+        notes.display_note()
     elif cmd == "export notes":
-        notes.export_notes_to_csv(),
+        notes.export_notes_to_csv()
 
 
-def main():
+def main() -> None:
     """
-    Main function for the assistant bot
-    that works with contacts and notes.
+    Main function for the assistant bot that interacts with users.
+
+    This bot provides functionalities for managing contacts and notes.
+    It supports various commands to add, modify, delete, and export data.
     """
     greeting()
 
@@ -106,11 +127,9 @@ def main():
             execute_command(cmd, args)
 
         # Notes commands
-        # logic for notes
         else:
             print("")
             console.print("Unknown command ⚠️", style="red bold")
-            # console.print('To get info about available commands, please type [blue]"help"[/] ', style='yellow italic')
             print("")
             if not suggest_and_execute_command(cmd, args, execute_command):
                 # If no suggestion was executed, show the help message

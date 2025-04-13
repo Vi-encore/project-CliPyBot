@@ -13,12 +13,21 @@ from pathlib import Path
 import datetime as dt
 from datetime import datetime as dtdt
 import csv
+from typing import Literal
 
 console = Console()
 
 
-# Note what type
 def show_note(note) -> None:
+    """
+    Display a single note in a formatted table.
+
+    Args:
+        note (Note): The note object to display.
+
+    Returns:
+        None
+    """
     print("")
     show_notes_in_table(note)
     print("")
@@ -26,6 +35,16 @@ def show_note(note) -> None:
 
 
 def parse_tags(tags_input: str) -> list:
+    """
+    Parse a comma-separated string of tags into a list of sanitized tag strings.
+
+    Args:
+        tags_input (str): A comma-separated string of tags.
+
+    Returns:
+        list: A list of sanitized tags, where each tag is stripped of whitespace
+            and limited to 25 characters. Empty tags are excluded.
+    """
     if not tags_input:
         return []
     return [
@@ -35,8 +54,13 @@ def parse_tags(tags_input: str) -> list:
     ]
 
 
-def all() -> int:
-    # print(notes.data)
+def all() -> Literal[1, 0]:
+    """
+    Display all notes in the collection.
+
+    Returns:
+        int: 0 for success, 1 if no notes were found.
+    """
     if not notes.data:
         console.print(f"No notes found❗️ ", style="red")
         return 1
@@ -50,7 +74,16 @@ def all() -> int:
 
 
 @input_error
-def add() -> int:
+def add() -> Literal[1, 0]:
+    """
+    Add a new note to the collection or update an existing note.
+
+    Prompts the user for title, content, and tags. If a note with the given title
+    already exists, updates it instead of creating a new one.
+
+    Returns:
+        int: 0 for success, 1 for failure.
+    """
     title = typing_input("Title: (str): ").strip()
     if not title:
         console.print("Title is required to create a note. ❗️", style="red")
@@ -85,9 +118,8 @@ def add() -> int:
         if not tags:
             break
         try:
-            tags_to_add = parse_tags(tags)  # if tag is in tags - do not add
+            tags_to_add = parse_tags(tags)
             [note.add_tag(tag) for tag in tags_to_add]
-            # [note.add_tag(tag) for tag in tags_to_add if tag not in [t.value for t in note.tags]]
             break
         except Exception as e:
             console.print("Invalid tag ❗️ ", style="red")
@@ -96,15 +128,21 @@ def add() -> int:
     save_notes(notes)
 
     typing_output(f'Note "{title}" saved successfully. ✅', color="green")
-    # show_contact(record)  # show contact details in table
     show_note(note)
-    # print(note)
     return 0
 
 
 @input_error
 def change_note() -> bool:
-    """Edit existing note (content or tags)"""
+    """
+    Edit an existing note's content or tags.
+
+    Displays all available notes and allows the user to select one for editing.
+    The user can choose to edit either the content or tags of the selected note.
+
+    Returns:
+        bool: True if the note was successfully edited, False otherwise.
+    """
     try:
         # Check if the notes dictionary is empty
         if not notes.data:
@@ -296,7 +334,15 @@ def change_note() -> bool:
 
 @input_error
 def delete_note() -> bool:
-    """Delete note, content, or tags"""
+    """
+    Delete a note, its content, or its tags.
+
+    Displays all available notes and allows the user to select one for deletion.
+    The user can choose to delete the entire note, only its content, or specific tags.
+
+    Returns:
+        bool: True if the deletion was successful, False otherwise.
+    """
     try:
         # Check if the notes dictionary is empty
         if not notes.data:
@@ -401,6 +447,16 @@ def delete_note() -> bool:
 
 @input_error
 def export_notes_to_csv() -> None:
+    """
+    Export all notes to a CSV file.
+
+    Prompts the user for a directory path to save the CSV file. If no path is provided,
+    saves the file to a default location in the 'storage' directory. The CSV file includes
+    columns for title, content, and tags of each note.
+
+    Returns:
+        None
+    """
     today = dtdt.now().strftime("%d.%m.%Y")
     filename = f"notes_{today}.csv"
 
@@ -456,9 +512,17 @@ def export_notes_to_csv() -> None:
         console.print(f"Error writing to file: {e} 🚨 ", style="red")
 
 
-# what to do here code in Bolma
 @input_error
-def find():
+def find() -> Literal[1, 0]:
+    """
+    Search for notes by title, content, or tag.
+
+    Displays options for searching notes and prompts the user to choose a search field
+    (title, content, or tag) and enter a search query. Displays all matching notes.
+
+    Returns:
+        int: 0 for success, 1 for failure or if no notes were found.
+    """
     print("")
     show_options_for_query_notes()
     print("")
@@ -487,7 +551,7 @@ def find():
         break
 
     # Get args based on query
-    if query == "1":  # search by name
+    if query == "1":  # search by title
         args = typing_input("Enter a title of the note: (str): ").strip().split()
     elif query == "2":
         args = typing_input("Enter a content: (str): ").strip().split()
@@ -505,11 +569,11 @@ def find():
         return 1
 
     # Call the find method with the appropriate arguments
-    if query == "1":  # search by name
+    if query == "1":  # search by title
         result = notes.search(" ".join(args), by_title=True)
-    elif query == "2":  # search by phone
+    elif query == "2":  # search by content
         result = notes.search(" ".join(args), by_content=True)
-    elif query == "3":  # search by email
+    elif query == "3":  # search by tag
         result = notes.search(" ".join(args), by_tag=True)
     else:
         typing_output(
@@ -518,19 +582,27 @@ def find():
         return 1
 
     if not result:
-        typing_output("No record found. ❗", color="yellow")
+        typing_output("No note found. ❗", color="yellow")
         return 1
-    # If a record is found, show the contact details
+    # If a note is found, show the contact details
 
     print("")
-    typing_output("Contact found:")
-    show_all_notes_table(result)  # show contacts details in table
+    typing_output("Note found:")
+    show_all_notes_table(result)  # show notes details in table
     print("")
     return 0
 
 
 @input_error
-def display_note():
+def display_note() -> None:
+    """
+    Display a specific note selected by the user.
+
+    Lists all available notes and allows the user to select one to display by number.
+
+    Returns:
+        None
+    """
     if not notes.data:
         typing_output("The contact book is empty ", color="yellow")
         return
@@ -550,7 +622,6 @@ def display_note():
         else:
             selected_index = int(what_contact) - 1
             if 0 <= selected_index < len(notes.data):
-                # selected_name = book.find_by_name(name)
                 selected_name = list(notes.data.keys())[selected_index]
                 show_note(notes.find_note(selected_name))
                 break
