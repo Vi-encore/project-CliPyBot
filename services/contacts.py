@@ -4,7 +4,11 @@ from pathlib import Path
 import datetime as dt
 from datetime import datetime as dtdt
 from decorators.decorators import input_error, check_arguments
-from helpers.validators import validate_and_normalize_phone, validate_email_str, validate_date_str
+from helpers.validators import (
+    validate_and_normalize_phone,
+    validate_email_str,
+    validate_date_str,
+)
 from models.contact import Record
 from helpers.helpers import save_contacts
 from rich.console import Console
@@ -971,7 +975,10 @@ def edit_contact() -> None:
 
                 normalized_phone = validate_and_normalize_phone(new_phone)
                 if not normalized_phone:
-                    typing_output(f"Invalid phone number: {new_phone}. Phone must be exactly 10 digits 🚨", color="red")
+                    typing_output(
+                        f"Invalid phone number: {new_phone}. Phone must be exactly 10 digits 🚨",
+                        color="red",
+                    )
                     return
 
                 change_phone(name, old_phone, new_phone)

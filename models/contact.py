@@ -2,7 +2,11 @@ import re
 import datetime as dt
 from datetime import datetime as dtdt, timedelta
 from decorators.decorators import exception_handler, input_error
-from helpers.validators import validate_and_normalize_phone, validate_email_str, validate_date_str
+from helpers.validators import (
+    validate_and_normalize_phone,
+    validate_email_str,
+    validate_date_str,
+)
 from helpers.validators import standardize_name
 
 

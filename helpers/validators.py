@@ -1,6 +1,7 @@
 import re
 from datetime import datetime as dtdt
 
+
 def validate_and_normalize_phone(phone: str) -> str | None:
     """
     Validate and normalize a phone number to a standard international format.
@@ -53,9 +54,9 @@ def standardize_name(name: str) -> str | None:
     name = name.strip()  # Remove leading and trailing whitespace
 
     # Validate name format (must start with a letter and contain only alphanumeric characters)
-    if not re.fullmatch(r'[a-zA-Z][a-zA-Z0-9 ]*[a-zA-Z0-9]', name):
+    if not re.fullmatch(r"[a-zA-Z][a-zA-Z0-9 ]*[a-zA-Z0-9]", name):
         return None
-    name = ' '.join(word.capitalize() for word in name.split())
+    name = " ".join(word.capitalize() for word in name.split())
     return name
 
 

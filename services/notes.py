@@ -53,7 +53,9 @@ def parse_tags(tags_input: str) -> list:
     # Check if any tag exceeds 25 characters
     for tag in tags_input.split(","):
         if len(tag.strip()) > 25:
-            typing_output(f"Tag {tag} is too big and will not be added! ", color="yellow")
+            typing_output(
+                f"Tag {tag} is too big and will not be added! ", color="yellow"
+            )
 
     return [tag.strip() for tag in tags if tag.strip() and len(tag.strip()) <= 25]
 
