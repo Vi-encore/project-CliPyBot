@@ -27,9 +27,9 @@ def show_contact_in_table(record) -> None:
         box=box.ROUNDED,  # Customize table shape
         title=f"{name} 👨",  # Title for the table
         title_justify="center",  # Center the title
-        title_style="bold dark_green",  # Title style
+        title_style="bold sea_green3",  # Title style
     )
-    table.add_column("Name", style="dark_green", width=20)
+    table.add_column("Name", style="sea_green3", width=20)
     table.add_column("Phones", justify="left", width=20)
     table.add_column("Emails", justify="left", width=20)
     table.add_column("Birthday", justify="left", width=20)
@@ -67,7 +67,7 @@ def show_all_contacts_table(records) -> None:
         box=box.ROUNDED,
         title="Contacts List 🗂️",
         title_justify="center",
-        title_style="bold dark_green",
+        title_style="bold sea_green3",
     )
     table.add_column("Name", style="bold white on green", width=20)
     table.add_column("Phones", justify="left", width=20)
@@ -107,7 +107,7 @@ def show_birthdays_table(birthdays) -> None:
         box=box.ROUNDED,
         title="Birthdays List 🍰",
         title_justify="center",
-        title_style="bold dark_green",
+        title_style="bold sea_green3",
     )
     table.add_column("Upcoming Birthdays", style="bold white on green", width=20)
     table.add_column("Birthday", justify="left", width=20)
@@ -120,6 +120,8 @@ def show_birthdays_table(birthdays) -> None:
         delta_days = (birthday_date - today).days
 
         word_day = "day" if delta_days == 1 else "days"
+
+        # print(f"{record['name']} has birthday on {record['birthday']} in {delta_days} {word_day}.")
 
         table.add_row(
             record["name"],
@@ -147,7 +149,7 @@ def show_options_for_query() -> None:
         box=box.ROUNDED,
         title="Query Options 🔍",
         title_justify="center",
-        title_style="bold dark_green",
+        title_style="bold sea_green3",
     )
     table.add_column("Option", style="bold white on green", width=20)
     table.add_column("Description", justify="left")
@@ -179,17 +181,17 @@ def show_notes_in_table(note) -> None:
     title, content, tags = note.get_display_data()
 
     table = Table(
-        show_header=True,
-        header_style="bold green",
-        box=box.ROUNDED,
-        title=f"{title} 👨",
-        title_justify="center",
-        title_style="bold dark_green",
+        show_header=True,  # Show header
+        header_style="bold green",  # Customize header style
+        box=box.ROUNDED,  # Customize table shape
+        title=f"{title} 👨",  # Title for the table
+        title_justify="center",  # Center the title
+        title_style="bold sea_green3",  # Title style
     )
-    table.add_column("Title", style="dark_green", width=20)
+    table.add_column("Title", style="sea_green3", width=20)
     table.add_column("Content", justify="left", width=50)
     table.add_column("Tags", justify="left", width=20)
-
+    # Format phones and emails with new lines
     tags_str = "\n".join(tags) if tags else "-"
 
     table.add_row(title, content, tags_str or "-")
@@ -218,7 +220,7 @@ def show_all_notes_table(notes) -> None:
         box=box.ROUNDED,
         title="Notes List 🗂️",
         title_justify="center",
-        title_style="bold dark_green",
+        title_style="bold sea_green3",
     )
     table.add_column("Title", style="bold white on green", width=20)
     table.add_column("Content", justify="left", width=50)
@@ -251,7 +253,7 @@ def show_options_for_query_notes() -> None:
         box=box.ROUNDED,
         title="Query Options 🔍",
         title_justify="center",
-        title_style="bold dark_green",
+        title_style="bold sea_green3",
     )
     table.add_column("Option", style="bold white on green", width=20)
     table.add_column("Description", justify="left")

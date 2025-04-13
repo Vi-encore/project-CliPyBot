@@ -1,5 +1,5 @@
 import re
-
+from datetime import datetime as dtdt
 
 def validate_and_normalize_phone(phone: str) -> str | None:
     """
@@ -53,10 +53,21 @@ def standardize_name(name: str) -> str | None:
     name = name.strip()  # Remove leading and trailing whitespace
 
     # Validate name format (must start with a letter and contain only alphanumeric characters)
-    if not re.fullmatch(r"[a-zA-Z][a-zA-Z0-9]*", name):
+    if not re.fullmatch(r'[a-zA-Z][a-zA-Z0-9 ]*[a-zA-Z0-9]', name):
         return None
-
-    # Capitalize the first letter
-    name = name.capitalize()
-
+    name = ' '.join(word.capitalize() for word in name.split())
     return name
+
+
+def validate_email_str(email: str) -> str | None:
+    email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+    if not re.match(email_regex, email):
+        return None
+    return email
+
+
+def validate_date_str(date: str) -> str | None:
+    print(date)
+    if not dtdt.strptime(date, "%d.%m.%Y"):
+        return None
+    return date

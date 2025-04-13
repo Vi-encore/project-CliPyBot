@@ -2,7 +2,7 @@ import re
 import datetime as dt
 from datetime import datetime as dtdt, timedelta
 from decorators.decorators import exception_handler, input_error
-from helpers.validators import validate_and_normalize_phone
+from helpers.validators import validate_and_normalize_phone, validate_email_str, validate_date_str
 from helpers.validators import standardize_name
 
 
@@ -143,9 +143,9 @@ class Email(Field):
         Raises:
             ValueError: If the email format is invalid.
         """
-        email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
-        if not re.match(email_regex, email):
+        if not validate_email_str(email):
             raise ValueError(f"Invalid email format: {email}")
+        return validate_email_str(email)
 
 
 class Birthday(Field):
@@ -222,7 +222,8 @@ class Record:
         self.birthday = None
         self.address = None
 
-    @input_error
+    # === PHONE ===
+    @exception_handler
     def add_phone(self, phone: str) -> None:
         """
         Add a phone number to the contact.
